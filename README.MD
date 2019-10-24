@@ -1,2 +1,2 @@
-Design Patter Project
+Design Pattern Project
 
