@@ -30,6 +30,15 @@ def set_cell_value():
         return jsonify({}), 405
 
 
+@app.route("/api/v1/restore_previous_state", methods = ["POST"])
+def restore_previous_state():
+    if request.method == "POST":
+        change_state_object = SudokuGameLogic.restore_previous_state()
+        return jsonify({change_state_object}), 200
+    else:
+        return jsonify({}), 405
+
+
 @app.route("/get_sudoku_board")
 def get_sudoku_board():
     global sudoku_board

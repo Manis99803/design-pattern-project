@@ -5,11 +5,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
+    <button onclick = "restoreState()">Restore State</button>
     <main>
       <ul>
         {% for row in row_wise_board %}
           {% for elements in row %}
-            <li data-value = "squareNumber - {{ elements['squareNumber'] }} - cellNumber - {{ elements['cellNumber']}}" 
+            <li data-value = "squareNumber - {{ elements['squareNumber'] }} - cellNumber - {{ elements['cellNumber']}} - 
+            rowNumber - {{ elements['rowNumber']}} - columnNumber - {{ elements['columnNumber']}}" 
               onclick = "display(this)"><span>{{ elements["value"] }}</span></li>
           {% endfor %}
         {% endfor %}
@@ -18,35 +20,59 @@
     <script>
       var serverAddress = "127.0.0.1"
       var portNumber = "5000"
-      
       function display(cell){
-        var value = prompt("Enter Value")
-        if (value != null) {
-          cellData = $(cell).attr('data-value').split("-")
-          console.log(value)
-          var cellObject = {}
-          cellObject[cellData[0].trim()] = cellData[1]
-          cellObject[cellData[2].trim()] = cellData[3]
-          cellObject["value"] = value
-          $.ajax({
-            url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/set_cell_value',
-            dataType: "json",
-            type: "POST",
-            contentType: "application/json",
-            xhrFields: { withCredentials: false },
-            crossDomain: true,
-            data: JSON.stringify(cellObject),
-            success: function (data) {
-              $(cell).first().html("1")
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              statusCode = (jqXHR.status);
-              raiseError("Cannot set the value")
-            }
-          });
-        }
+          var cellValue = $(cell).children('span').first().html()
+          if (cellValue == ''){
+              var value = prompt("Enter Value")
+              console.log($(cell).attr('data-value'))
+              if (value != null) {
+                cellData = $(cell).attr('data-value').split("-")
+                console.log(cellData)
+                var cellObject = {}
+                cellObject[cellData[0].trim()] = cellData[1].trim()
+                cellObject[cellData[2].trim()] = cellData[3].trim()
+                cellObject[cellData[4].trim()] = cellData[5].trim()
+                cellObject[cellData[6].trim()] = cellData[7].trim()
+                cellObject["value"] = value.trim()
+                console.log(cellObject)
+                $.ajax({
+                  url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/set_cell_value',
+                  dataType: "json",
+                  type: "POST",
+                  contentType: "application/json",
+                  xhrFields: { withCredentials: false },
+                  crossDomain: true,
+                  data: JSON.stringify(cellObject),
+                  success: function (data) {
+                    $(cell).first().html(value)
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    statusCode = (jqXHR.status);
+                  }
+                });
+              }
+          }
         
       }
+      
+      function restoreState(){
+        $.ajax({
+          url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/restore_previous_state',
+          dataType: "json",
+          type: "POST",
+          contentType: "application/json",
+          xhrFields: { withCredentials: false },
+          crossDomain: true,
+          success: function (data) {
+            console.log(data)
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            statusCode = (jqXHR.status);
+            
+          }
+        });
+      }
+      
     </script>
   </body>
 </html>
