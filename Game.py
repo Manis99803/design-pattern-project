@@ -33,8 +33,11 @@ def set_cell_value():
 @app.route("/api/v1/restore_previous_state", methods = ["POST"])
 def restore_previous_state():
     if request.method == "POST":
-        change_state_object = SudokuGameLogic.restore_previous_state()
-        return jsonify({change_state_object}), 200
+        previous_cell = SudokuGameLogic.restore_previous_state()
+        if previous_cell == False:
+            return jsonify({}), 400
+        else:
+            return jsonify(previous_cell), 200
     else:
         return jsonify({}), 405
 
@@ -52,8 +55,7 @@ def get_sudoku_board():
     sudoku_board_list = sudoku_board.get_list_representation()
 
     row_wise_sudoku = SudokuGameLogic.convert_square_wise_to_row_wise(sudoku_board_list)
-    column_wise_sudoku = SudokuGameLogic.convert_square_wise_to_column_wise(sudoku_board_list)
-    
+    column_wise_sudoku = SudokuGameLogic.convert_square_wise_to_column_wise(sudoku_board_list)    
 
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 

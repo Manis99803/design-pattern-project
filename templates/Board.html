@@ -10,8 +10,7 @@
       <ul>
         {% for row in row_wise_board %}
           {% for elements in row %}
-            <li data-value = "squareNumber - {{ elements['squareNumber'] }} - cellNumber - {{ elements['cellNumber']}} - 
-            rowNumber - {{ elements['rowNumber']}} - columnNumber - {{ elements['columnNumber']}}" 
+            <li data-value = "squareNumber {{ elements['squareNumber'] }} cellNumber {{ elements['cellNumber']}} rowNumber {{ elements['rowNumber']}} columnNumber {{ elements['columnNumber']}}" 
               onclick = "display(this)"><span>{{ elements["value"] }}</span></li>
           {% endfor %}
         {% endfor %}
@@ -26,7 +25,7 @@
               var value = prompt("Enter Value")
               console.log($(cell).attr('data-value'))
               if (value != null) {
-                cellData = $(cell).attr('data-value').split("-")
+                cellData = $(cell).attr('data-value').split(" ")
                 console.log(cellData)
                 var cellObject = {}
                 cellObject[cellData[0].trim()] = cellData[1].trim()
@@ -64,10 +63,13 @@
           xhrFields: { withCredentials: false },
           crossDomain: true,
           success: function (data) {
-            console.log(data)
+            
+            expression = '[data-value="squareNumber ' +  data["squareNumber"] + " cellNumber " + data["cellNumber"] + " rowNumber "
+              + data["rowNumber"] + " columnNumber " + data["columnNumber"] + '"]'
+            $("li").filter(expression).html(data["value"])
           },
           error: function (jqXHR, textStatus, errorThrown) {
-            statusCode = (jqXHR.status);
+            console.log("Can't Undo any more")
             
           }
         });

@@ -1,14 +1,14 @@
 import SudokuGenerator
 from Cell import Cell
 from Square import Square
+import copy
 
 square_objects = []
-
 previous_state = []
 
 def convert_square_wise_to_row_wise(sudoku_board_list):
     offset_value = 0
-    row_wise_sudoku = []
+    row_wise_sudoku = list()
     for i in range(0, 3):
             row_elements = []
             for j in range(0 + offset_value, 3 + offset_value):
@@ -40,9 +40,11 @@ def convert_square_wise_to_column_wise(sudoku_board_list):
     for i in range(0, 9):
         column_cell = []
         for j in range(0, 9):
-            column_cell.append(sudoku_board_list[j][j][i])
+            for cell in sudoku_board_list[j][j]:
+                if cell["columnNumber"] == i:
+                    column_cell.append(cell)
         column_wise_sudoku.append(column_cell)
-    
+        
     return column_wise_sudoku
 
 def map_row_to_objects(sudoku_board_values):
@@ -109,8 +111,6 @@ def update_cell_value(cell_data, row_wise_sudoku, column_wise_sudoku):
     
     user_cell_object = Cell(int(cell_data["cellNumber"]), int(cell_data["value"]), int(cell_data["rowNumber"]),
                         int(cell_data["columnNumber"]))
-    print(user_cell_object.get_dictionary_representation())
-
     
     cell_objects = square_objects[int(cell_data["squareNumber"])].get_squares_cell()
     
@@ -123,9 +123,11 @@ def update_cell_value(cell_data, row_wise_sudoku, column_wise_sudoku):
     
     if (user_cell_object.get_cell_value() not in square_elements) and (user_cell_object.get_cell_value() not in column_elements) \
             and (user_cell_object.get_cell_value() not in row_elements):
-        previous_state.append(square_objects)
+        
         cell = cell_objects[user_cell_object.get_cell_number()]
+        previous_state.append(copy.deepcopy(cell_objects[user_cell_object.get_cell_number()]))
         cell.set_cell_value(user_cell_object.get_cell_value())
+        
         return True
     else:
         return False
@@ -135,25 +137,18 @@ def restore_previous_state():
     global previous_state
     global square_objects
 
-    previous_state_objects = previous_state.pop()
-    
-    square_objects_length = len(previous_state_objects)
-    
-    for i in range(0, square_objects_length):
-        print(square_objects[i])
-        cell_objects_length = len(square_objects[i])
-        for j in range(0, cell_objects_length):
-            if previous_state_objects[i][j].get_cell_value() != square_objects[i][j].get_cell_value():
-                change_state_object = {}
-                change_state_object["value"] = square_objects[i][j].get_cell_value()
-                change_state_object["cellNumber"] = square_objects[i][j].get_cell_number()
-                change_state_object["squareNumber"] = square_objects[i].get_square_number()
-                square_objects[i][j].set_cell_value(
-                    previous_state_objects[i][j].get_cell_value())
-                previous_state.append(square_objects)
-                return change_state_object
-
-
+    if len(previous_state) != 0:
+        previous_cell_object = previous_state.pop()
+        for square in square_objects:
+            for cell in square:
+                if (cell.get_column_number() == previous_cell_object.get_column_number()) and \
+                    (cell.get_row_number() == previous_cell_object.get_row_number()):    
+                    cell.set_cell_value(previous_cell_object.get_cell_value())
+                    cell_dictionary = cell.get_dictionary_representation()
+                    cell_dictionary["squareNumber"] = square.get_square_number()
+                    return cell_dictionary
+    else:
+        return False
 
 def get_sudoku_board():
     return SudokuGenerator.final_grid
