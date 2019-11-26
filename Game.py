@@ -42,6 +42,18 @@ def restore_previous_state():
         return jsonify({}), 405
 
 
+
+@app.route("/api/v1/save_game", methods = ["POST"])
+def save_game():
+    if request.method == "POST":
+        db.save_game("Manish")
+    else:
+        return jsonify({}), 405
+
+
+
+
+
 @app.route("/get_sudoku_board")
 def get_sudoku_board():
     global sudoku_board
