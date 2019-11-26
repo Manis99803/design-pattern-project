@@ -24,8 +24,20 @@ def check_user_name_in_db(user_object):
     
     return True
 
+def add_user_to_db(user_object):
+    connection_state = db.connect("Sudoku.db")
+    cursor = connection_state.cursor()
 
-def save_game(row_wise_sudoku):
+    user = User(user_object["name"], user_object["password"])
+    print(user.get_dictionary_representation())
+
+    query = "INSERT INTO User VALUES (?, ?)"
+    cursor.execute(query, [user_object["name"], user_object["password"], ])
+
+    connection_state.commit()
+    connection_state.close()
+
+def save_game_to_db(row_wise_sudoku):
     connection_state = db.connect("Sudoku.db")
     cursor = connection_state.cursor()
     
@@ -39,8 +51,7 @@ def save_game(row_wise_sudoku):
     connection_state.commit()
     connection_state.close()
 
-
-def get_older_game(user_name):
+def get_older_game_from_db(user_name):
     
     connection_state = db.connect("Sudoku.db")
     cursor = connection_state.cursor()

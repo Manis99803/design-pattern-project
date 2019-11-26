@@ -19,6 +19,21 @@ def LoginCheck(function_name):
     else:
         return login
 
+
+@app.route("/api/v1/user_signup", methods=["POST"])
+def user_signup():
+    if request.method == "POST":
+        user_data = request.get_json()
+        if not db.check_user_name_in_db(user_data):
+            db.add_user_to_db(user_data)
+            return jsonify({}), 200
+        else:
+            return jsonify({}), 400
+    else:
+        return jsonify({}), 405
+
+
+
 @app.route("/api/v1/user_login", methods = ["POST"])
 def user_login():
     if request.method == "POST":
@@ -38,8 +53,13 @@ def set_cell_value():
     if request.method == "POST":
         data = request.get_json()
         status = SudokuGameLogic.update_cell_value(data)
+    
         if status:
-            return jsonify({}), 200
+            # Could be optimised by having counter
+            if not SudokuGameLogic.check_board_status():
+                return jsonify({"message": "0"}), 200       # 0 means the game is still on and 1 means the user is winner.
+            else:
+                return jsonify({"message" : "1"}), 200
         else:
             return jsonify({}), 400
     else:
@@ -58,16 +78,14 @@ def restore_previous_state():
         return jsonify({}), 405
 
 
-
 @app.route("/api/v1/save_game", methods = ["POST"])
 def save_game():
     if request.method == "POST":
         row_wise_sudoku = request.get_json()
-        db.save_game(row_wise_sudoku)
+        db.save_game_to_db(row_wise_sudoku)
         return jsonify({}), 200
     else:
         return jsonify({}), 405
-
 
 
 @app.route("/login", methods = ["GET"])
@@ -75,11 +93,11 @@ def login():
     return render_template("Login.html")
 
 
-
 @app.route("/older_game")
+# @LoginCheck
 def older_game():
     user_name = "Manish"
-    sudoku_board_values = db.get_older_game(user_name)
+    sudoku_board_values = db.get_older_game_from_db(user_name)
     row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 

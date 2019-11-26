@@ -109,7 +109,6 @@ def map_row_to_objects(sudoku_board_values):
             square_number += 1
             offset_value += 3
 
-
 def update_cell_value(cell_data):
     global square_objects
     global previous_state
@@ -144,7 +143,6 @@ def update_cell_value(cell_data):
     else:
         return False
     
-
 def restore_previous_state():
     global previous_state
     global square_objects
@@ -182,6 +180,15 @@ def create_game_environment(sudoku_board_values):
 
     return row_wise_sudoku
     
-
 def get_sudoku_board():
     return SudokuGenerator.final_grid
+
+def check_board_status():
+    global square_objects
+
+    for square in square_objects:
+        for cell in square:
+            if cell.get_cell_value() == '':
+                return False
+
+    return True
