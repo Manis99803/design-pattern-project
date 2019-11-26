@@ -1,6 +1,13 @@
 var serverAddress = "127.0.0.1"
 var portNumber = "5000"
 
+
+function displayMessage(message) {
+    $("#outputFeedback").css("display", "block");
+    $("#outputFeedback").html(message);
+}
+
+
 function display(cell){
     var cellValue = $(cell).children('span').first().html()
     if (cellValue == ''){
@@ -26,6 +33,9 @@ function display(cell){
             data: JSON.stringify(cellObject),
             success: function (data) {
                 $(cell).first().html(value)
+                if (data["message"] == 1){
+                    displayMessage("Winner Winner Chicken Dinner")
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 statusCode = (jqXHR.status);

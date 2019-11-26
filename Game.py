@@ -93,6 +93,10 @@ def login():
     return render_template("Login.html")
 
 
+@app.route("/signup")
+def signup():
+    return render_template("Signup.html")
+
 @app.route("/older_game")
 # @LoginCheck
 def older_game():
