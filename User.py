@@ -1,7 +1,11 @@
 class User:
+    instance = None
     def __init__(self, user_name, password):
-        self.user_name = user_name
-        self.password = password
+        if User.instance == None:
+            self.user_name = user_name
+            self.password = password
+        else:
+            raise Exception("This is a Singleton Class")
 
     def get_user_name(self):
         return self.user_name

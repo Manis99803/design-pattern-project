@@ -1,27 +1,43 @@
 from Cell import Cell
 from Square import Square
 from Board import Board
-from flask import Flask, render_template, jsonify, request
+from User import User
+import dbdata as db
+from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
 
 app = Flask(__name__)
 
-sudoku_board = []
-sudoku_board_list = []
+
+
+
+def LoginCheck(function_name):
+    if User.instance != None:
+        def function(*args):
+            return function_name(*args)
+        return function
+    else:
+        return login
+
+@app.route("/api/v1/user_login", methods = ["POST"])
+def user_login():
+    if request.method == "POST":
+        user_data = request.get_json()
+        if db.check_user_name_in_db(user_data):
+            session["name"] = user_data["name"]
+            session["logged_in"] = True
+            return jsonify({}), 200
+        else:
+            return jsonify({}), 400
+    else:
+        return jsonify({}), 405
+
 
 @app.route("/api/v1/set_cell_value", methods = ["POST"])
 def set_cell_value():
     if request.method == "POST":
-        global sudoku_board
-        global sudoku_board_list
         data = request.get_json()
-        
-        row_wise_sudoku = SudokuGameLogic.convert_square_wise_to_row_wise(
-            sudoku_board_list)
-        column_wise_sudoku = SudokuGameLogic.convert_square_wise_to_column_wise(
-            sudoku_board_list)
-
-        status = SudokuGameLogic.update_cell_value(data, row_wise_sudoku, column_wise_sudoku)
+        status = SudokuGameLogic.update_cell_value(data)
         if status:
             return jsonify({}), 200
         else:
@@ -46,32 +62,40 @@ def restore_previous_state():
 @app.route("/api/v1/save_game", methods = ["POST"])
 def save_game():
     if request.method == "POST":
-        db.save_game("Manish")
+        row_wise_sudoku = request.get_json()
+        db.save_game(row_wise_sudoku)
+        return jsonify({}), 200
     else:
         return jsonify({}), 405
 
 
 
+@app.route("/login", methods = ["GET"])
+def login():
+    return render_template("Login.html")
 
 
-@app.route("/get_sudoku_board")
-def get_sudoku_board():
-    global sudoku_board
-    global sudoku_board_list
+
+@app.route("/older_game")
+def older_game():
+    user_name = "Manish"
+    sudoku_board_values = db.get_older_game(user_name)
+    row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
+    return render_template("Board.html", row_wise_board = row_wise_sudoku)
+
+
+@app.route("/new_game")
+# @LoginCheck
+def new_game():
     
     sudoku_board_values = SudokuGameLogic.get_sudoku_board()
+    print(sudoku_board_values)
+    row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
     
-    SudokuGameLogic.map_row_to_objects(sudoku_board_values)
-
-    sudoku_board = Board(SudokuGameLogic.square_objects)
-    sudoku_board_list = sudoku_board.get_list_representation()
-
-    row_wise_sudoku = SudokuGameLogic.convert_square_wise_to_row_wise(sudoku_board_list)
-    column_wise_sudoku = SudokuGameLogic.convert_square_wise_to_column_wise(sudoku_board_list)    
-
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 
 if __name__ == "__main__":
+    app.secret_key = "123456789"
     app.run(debug = True)
     
 

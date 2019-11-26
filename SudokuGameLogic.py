@@ -1,10 +1,14 @@
 import SudokuGenerator
 from Cell import Cell
 from Square import Square
+from Board import Board
 import copy
 
-square_objects = []
-previous_state = []
+square_objects = list()
+previous_state = list()
+sudoku_board = list()
+sudoku_board_list = list()
+
 
 def convert_square_wise_to_row_wise(sudoku_board_list):
     offset_value = 0
@@ -52,6 +56,7 @@ def map_row_to_objects(sudoku_board_values):
     square_number = 0
     global square_objects
     
+    square_objects = []
     for i in range(0, 9, 3):
             cell_number = 0
             cell_objects = []
@@ -105,10 +110,17 @@ def map_row_to_objects(sudoku_board_values):
             offset_value += 3
 
 
-def update_cell_value(cell_data, row_wise_sudoku, column_wise_sudoku):
+def update_cell_value(cell_data):
     global square_objects
     global previous_state
+    global sudoku_board_list
     
+    row_wise_sudoku = convert_square_wise_to_row_wise(
+        sudoku_board_list)
+    column_wise_sudoku = convert_square_wise_to_column_wise(
+        sudoku_board_list)
+
+
     user_cell_object = Cell(int(cell_data["cellNumber"]), int(cell_data["value"]), int(cell_data["rowNumber"]),
                         int(cell_data["columnNumber"]))
     
@@ -149,6 +161,27 @@ def restore_previous_state():
                     return cell_dictionary
     else:
         return False
+
+def create_game_environment(sudoku_board_values):
+    
+    global sudoku_board
+    global sudoku_board_list
+    global square_objects
+
+    print(sudoku_board_values)
+    map_row_to_objects(sudoku_board_values)
+
+    sudoku_board = Board(square_objects)
+    sudoku_board_list = sudoku_board.get_list_representation()
+
+    row_wise_sudoku = convert_square_wise_to_row_wise(
+        sudoku_board_list)
+
+    column_wise_sudoku = convert_square_wise_to_column_wise(
+        sudoku_board_list)
+
+    return row_wise_sudoku
+    
 
 def get_sudoku_board():
     return SudokuGenerator.final_grid

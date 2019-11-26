@@ -1,22 +1,22 @@
-<html>
-  <head>
-    <title> Sudoku </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/Board.css')}}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <button onclick = "restoreState()" style = "font-size: 20px;">Restore State</button>
-    <button onclick = "saveGame()" style="font-size: 20px;">Save Game</button>
-    <main>
-      <ul>
-        {% for row in row_wise_board %}
-          {% for elements in row %}
-            <li data-value = "squareNumber {{ elements['squareNumber'] }} cellNumber {{ elements['cellNumber']}} rowNumber {{ elements['rowNumber']}} columnNumber {{ elements['columnNumber']}}" 
-              onclick = "display(this)"><span>{{ elements["value"] }}</span></li>
-          {% endfor %}
+{% extends "base.html" %}
+{% block navbar %}
+  <a href="{{ url_for('login')}}"> Login </a> <br>
+  <a href="{{ url_for('older_game')}}"> Get Older Game </a> <br>
+  <a href="{{ url_for('new_game')}}"> Get New Game </a> <br>
+  <button  style="font-size: 20px;" id = "restoreState()"> Restore State </button>
+  <button style="font-size: 20px;" id = "saveGame"> Save Game </button>
+{% endblock %}
+{% block body %}
+  <main>
+    <ul>
+      {% for row in row_wise_board %}
+        {% for elements in row %}
+          <li data-value = "squareNumber {{ elements['squareNumber'] }} cellNumber {{ elements['cellNumber']}} rowNumber {{ elements['rowNumber']}} columnNumber {{ elements['columnNumber']}}" 
+            onclick = "display(this)"><span>{{ elements["value"] }}</span></li>
         {% endfor %}
-      </ul>
-    </main>
-    <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/Board.js') }}"></script>
-  </body>
-</html>
+      {% endfor %}
+    </ul>
+  </main>
+  <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/Board.js') }}"></script>
+{% endblock %}
+  

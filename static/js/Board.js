@@ -36,7 +36,7 @@ function display(cell){
 
 }
       
-function restoreState(){
+$("#restoreState").on('click', function(){
     $.ajax({
         url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/restore_previous_state',
         dataType: "json",
@@ -53,4 +53,35 @@ function restoreState(){
             console.log("Can't Undo any more")
         }
     });
-}
+})
+
+$("#saveGame").on('click', function() {
+    console.log("In save game function");
+    cellElements = $("li").children('span')
+    rowElements = []
+    row = []
+    for(var i = 0; i <= 81; i++){
+        row.push($(cellElements[i]).html())
+        if ((i + 1) % 9 == 0) {
+            rowElements.push(row)
+            row = []
+        }
+    }
+    $.ajax({
+        url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/save_game',
+        dataType: "json",
+        type: "POST",
+        contentType: "application/json",
+        xhrFields: { withCredentials: false },
+        crossDomain: true,
+        data : JSON.stringify(rowElements),
+        success: function (data) {
+            console.log("Game saved")
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Can't Undo any more")
+        }
+    });
+
+
+})
