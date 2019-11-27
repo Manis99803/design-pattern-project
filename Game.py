@@ -9,8 +9,6 @@ import SudokuGameLogic
 app = Flask(__name__)
 
 
-
-
 def LoginCheck(function_name):
     if User.instance != None:
         def function(*args):
@@ -31,7 +29,6 @@ def user_signup():
             return jsonify({}), 400
     else:
         return jsonify({}), 405
-
 
 
 @app.route("/api/v1/user_login", methods = ["POST"])
@@ -91,7 +88,6 @@ def save_game():
 @app.route("/login", methods = ["GET"])
 def login():
     return render_template("Login.html")
-
 
 @app.route("/signup")
 def signup():

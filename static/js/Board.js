@@ -33,7 +33,7 @@ function display(cell){
             data: JSON.stringify(cellObject),
             success: function (data) {
                 $(cell).first().html(value)
-                if (data["message"] == 1){
+                if (data["message"] == "1"){
                     displayMessage("Winner Winner Chicken Dinner")
                 }
             },
