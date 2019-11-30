@@ -7,10 +7,21 @@ function displayMessage(message) {
     $("#outputFeedback").html(message);
 }
 
+function checkNumber(value){
+    if(!isNaN(value)){
+        value = parseInt(value);
+        if(value >=1 && value <= 9)
+            return true;
+        else
+            return false;
+    } else {
+        return false;
+    }
+}
 
 function display(cell){
     var cellValue = $(cell).children('span').first().html()
-    if (cellValue == ''){
+    if (cellValue == '' && checkNumber(cellValue)){
         var value = prompt("Enter Value")
         console.log($(cell).attr('data-value'))
         if (value != null) {
