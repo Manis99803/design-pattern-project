@@ -13,8 +13,6 @@ sudoku_board_list = list()
 square_objects = list()
 previous_state = list()
 
-# Solved Solution state. 
-solution_square_objects = list()
 
 def convert_square_wise_to_row_wise(sudoku_board_list):
     offset_value = 0
@@ -46,7 +44,7 @@ def convert_square_wise_to_column_wise(sudoku_board_list):
         
     return column_wise_sudoku
 
-def map_row_to_objects(sudoku_board_values, square_objects):
+def map_row_to_objects(sudoku_board_values, square_objects, diff_cell):
     offset_value = 0
     square_number = 0
     
@@ -59,9 +57,9 @@ def map_row_to_objects(sudoku_board_values, square_objects):
                 for k in range(0 + offset_value, 3 + offset_value):
                     if sudoku_board_values[row_number][k] != 0:
                         cell = Cell(
-                            cell_number, sudoku_board_values[row_number][k], row_number, k)
+                            cell_number, sudoku_board_values[row_number][k], sudoku_board_values[row_number][k], row_number, k)
                     else:
-                        cell = Cell(cell_number, '', row_number, k)
+                        cell = Cell(cell_number, '', diff_cell[(row_number, k)], row_number, k)
                     cell_objects.append(cell)
                     cell_number += 1
 
@@ -69,7 +67,6 @@ def map_row_to_objects(sudoku_board_values, square_objects):
             square_objects.append(square)
             square_number += 1
             offset_value += 3
-
 
 def update_cell_value(cell_data):
     global square_objects
@@ -122,18 +119,30 @@ def restore_previous_state():
     else:
         return False
 
+
+def compute_diff_cell(sudoku_board_values, sudoku_solution):
+    diff_cell = dict()
+    for i in range(9):
+        for j in range(9):
+            if sudoku_board_values[i][j] != sudoku_solution[i][j]:
+                diff_cell[(i, j)] = sudoku_solution[i][j]
+    return diff_cell
+
+
 def create_game_environment(sudoku_board_values):
     
     global sudoku_board_list
     global square_objects
-    global solution_square_objects
+
+    diff_cell = dict()
 
     sudoku_solution = get_board_solution(sudoku_board_values)
+    diff_cell = compute_diff_cell(sudoku_board_values, sudoku_solution)
 
     # Mapping row to class structure 
-    map_row_to_objects(sudoku_board_values, square_objects)
+    map_row_to_objects(sudoku_board_values, square_objects, diff_cell)
     
-    map_row_to_objects(sudoku_solution, solution_square_objects)
+    
 
     sudoku_board = Board(square_objects)
     sudoku_board_list = sudoku_board.get_list_representation()
@@ -171,7 +180,6 @@ def check_board_status():
 def create_user_object(user_data):
     global user
     user = User(user_data["name"], user_data["password"])
-
 
 def delete_user_object():
     global user
