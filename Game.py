@@ -87,6 +87,11 @@ def save_game():
 def login():
     return render_template("Login.html")
 
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    SudokuGameLogic.delete_user_object()
+
 @app.route("/signup")
 def signup():
     return render_template("Signup.html")
