@@ -1,4 +1,5 @@
 import SudokuGenerator
+from SudokuSolution import SudokuSolution
 from Cell import Cell
 from Square import Square
 from Board import Board
@@ -8,6 +9,7 @@ square_objects = list()
 previous_state = list()
 sudoku_board = list()
 sudoku_board_list = list()
+sudoku_solution = list()
 
 
 def convert_square_wise_to_row_wise(sudoku_board_list):
@@ -19,7 +21,6 @@ def convert_square_wise_to_row_wise(sudoku_board_list):
         square_offset = 0
         for j in range(0, 3):
             row_elements = []
-            print(square_offset)
             for k in range(0 + offset_value, 3 + offset_value):
                 for l in range(0 + square_offset, 3 + square_offset):
                     sudoku_board_list[k][k][l]["squareNumber"] = k
@@ -125,11 +126,14 @@ def create_game_environment(sudoku_board_values):
     global sudoku_board_list
     global square_objects
 
+    compute_board_solution(sudoku_board_values)
+    
     map_row_to_objects(sudoku_board_values)
 
     sudoku_board = Board(square_objects)
     sudoku_board_list = sudoku_board.get_list_representation()
 
+    #After mapping the rows to Class structure
     row_wise_sudoku = convert_square_wise_to_row_wise(
         sudoku_board_list)
 
@@ -138,6 +142,12 @@ def create_game_environment(sudoku_board_values):
 
     return row_wise_sudoku
     
+def compute_board_solution(row_wise_sudoku):
+    global sudoku_solution
+    row_wise_sudoku = SudokuGenerator.final_grid
+    sudoku_string = [str(cell_value) for row in row_wise_sudoku for cell_value in row]
+    sudoku_solution = SudokuSolution(''.join(sudoku_string))
+
 def get_sudoku_board():
     return SudokuGenerator.final_grid
 

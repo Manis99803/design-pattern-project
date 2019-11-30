@@ -107,7 +107,6 @@ def older_game():
 def new_game():
     
     sudoku_board_values = SudokuGameLogic.get_sudoku_board()
-    print(sudoku_board_values)
     row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
     
     return render_template("Board.html", row_wise_board = row_wise_sudoku)

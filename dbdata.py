@@ -61,14 +61,13 @@ def get_older_game_from_db(user_name):
 
     db_board_values = cursor.fetchall()[0]
 
-    sudoku_board_values = list()
+    row_wise_sudoku = list()
     row = list()
     
     for cell_number in range(1, 82):
         row.append(db_board_values[cell_number])
         if cell_number % 9 == 0:
-            sudoku_board_values.append(row)
+            row_wise_sudoku.append(row)
             row = []
     
-    print(sudoku_board_values)
-    return sudoku_board_values
+    return row_wise_sudoku
