@@ -1,10 +1,7 @@
-from Cell import Cell
-from Square import Square
-from Board import Board
-from User import User
 import dbdata as db
 from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
+from User import User
 
 app = Flask(__name__)
 
