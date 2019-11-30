@@ -36,6 +36,7 @@ def user_login():
     if request.method == "POST":
         user_data = request.get_json()
         if db.check_user_name_in_db(user_data):
+            SudokuGameLogic.create_user_object(user_data)
             session["name"] = user_data["name"]
             session["logged_in"] = True
             return jsonify({}), 200

@@ -2,18 +2,14 @@ from User import User
 import sqlite3 as db
 
 # Need a better way to handle this
-user = ''
+
 
 def check_user_name_in_db(user_object):
-    global user
     connection_state = db.connect("Sudoku.db")
     cursor = connection_state.cursor()
 
-    user = User(user_object["name"], user_object["password"])
-    print(user.get_dictionary_representation())
-
     query = "SELECT * from User where name = ? and password = ?"
-    cursor.execute(query, [user.get_user_name(), user.get_user_password()])
+    cursor.execute(query, [user_object["name"], user_object["password"]])
 
     data = cursor.fetchone()
     connection_state.commit()

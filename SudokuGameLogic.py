@@ -3,8 +3,10 @@ from SudokuSolution import SudokuSolution
 from Cell import Cell
 from Square import Square
 from Board import Board
+from User import User
 import copy
 
+user = ''
 
 # list of list containting the square details, cell details
 sudoku_board_list = list()
@@ -165,3 +167,15 @@ def check_board_status():
                 return False
 
     return True
+
+def create_user_object(user_data):
+    global user
+    user = User(user_data["name"], user_data["password"])
+
+
+def delete_user_object():
+    global user
+    del(user)
+    User.reset()
+    user = ''
+    
