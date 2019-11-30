@@ -1,8 +1,6 @@
 from User import User
 import sqlite3 as db
 
-# Need a better way to handle this
-
 
 def check_user_name_in_db(user_object):
     connection_state = db.connect("Sudoku.db")
