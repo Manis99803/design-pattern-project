@@ -8,7 +8,9 @@ function displayMessage(message) {
 }
 
 function checkNumber(value){
-    if(!isNaN(value)){
+    if(value == null){
+        return false;
+    } else if(!isNaN(value)) {
         value = parseInt(value);
         if(value >=1 && value <= 9)
             return true;
@@ -21,40 +23,39 @@ function checkNumber(value){
 
 function display(cell){
     var cellValue = $(cell).children('span').first().html()
-    if (cellValue == '' && checkNumber(cellValue)){
+    console.log(cellValue)
+    if (cellValue == ''){
         var value = prompt("Enter Value")
-        console.log($(cell).attr('data-value'))
-        if (value != null) {
-        cellData = $(cell).attr('data-value').split(" ")
-        console.log(cellData)
-        var cellObject = {}
-        cellObject[cellData[0].trim()] = cellData[1].trim()
-        cellObject[cellData[2].trim()] = cellData[3].trim()
-        cellObject[cellData[4].trim()] = cellData[5].trim()
-        cellObject[cellData[6].trim()] = cellData[7].trim()
-        cellObject["value"] = value.trim()
-        console.log(cellObject)
-        $.ajax({
-            url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/set_cell_value',
-            dataType: "json",
-            type: "POST",
-            contentType: "application/json",
-            xhrFields: { withCredentials: false },
-            crossDomain: true,
-            data: JSON.stringify(cellObject),
-            success: function (data) {
-                $(cell).first().html(value)
-                if (data["message"] == "1"){
-                    displayMessage("Winner Winner Chicken Dinner")
+        if(checkNumber(value)){
+            console.log($(cell).attr('data-value'))
+            cellData = $(cell).attr('data-value').split(" ")
+            var cellObject = {}
+            cellObject[cellData[0].trim()] = cellData[1].trim()
+            cellObject[cellData[2].trim()] = cellData[3].trim()
+            cellObject[cellData[4].trim()] = cellData[5].trim()
+            cellObject[cellData[6].trim()] = cellData[7].trim()
+            cellObject["value"] = value.trim()
+            console.log(cellObject)
+            $.ajax({
+                url: 'http://' + serverAddress + ':' + portNumber + '/api/v1/set_cell_value',
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json",
+                xhrFields: { withCredentials: false },
+                crossDomain: true,
+                data: JSON.stringify(cellObject),
+                success: function (data) {
+                    $(cell).first().html(value)
+                    if (data["message"] == "1"){
+                        displayMessage("Winner Winner Chicken Dinner")
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    statusCode = (jqXHR.status);
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                statusCode = (jqXHR.status);
-            }
-        });
+            });
         }
     }
-
 }
       
 $("#restoreState").on('click', function(){
