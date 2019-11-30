@@ -5,18 +5,19 @@ from Square import Square
 from Board import Board
 import copy
 
+
+# list of list containting the square details, cell details
+sudoku_board_list = list()
 square_objects = list()
 previous_state = list()
-sudoku_board = list()
-sudoku_board_list = list()
-sudoku_solution = list()
 
+# Solved Solution state. 
+solution_square_objects = list()
 
 def convert_square_wise_to_row_wise(sudoku_board_list):
     offset_value = 0
     square_offset = 0
     row_wise_sudoku = list()
-    
     for i in range(0, 3):
         square_offset = 0
         for j in range(0, 3):
@@ -43,12 +44,10 @@ def convert_square_wise_to_column_wise(sudoku_board_list):
         
     return column_wise_sudoku
 
-def map_row_to_objects(sudoku_board_values):
+def map_row_to_objects(sudoku_board_values, square_objects):
     offset_value = 0
     square_number = 0
-    global square_objects
     
-    square_objects = []
     for i in range(0, 9, 3):    
         offset_value = 0
         for j in range(0, 3):
@@ -68,6 +67,7 @@ def map_row_to_objects(sudoku_board_values):
             square_objects.append(square)
             square_number += 1
             offset_value += 3
+
 
 def update_cell_value(cell_data):
     global square_objects
@@ -122,13 +122,16 @@ def restore_previous_state():
 
 def create_game_environment(sudoku_board_values):
     
-    global sudoku_board
     global sudoku_board_list
     global square_objects
+    global solution_square_objects
 
-    compute_board_solution(sudoku_board_values)
+    sudoku_solution = get_board_solution(sudoku_board_values)
+
+    # Mapping row to class structure 
+    map_row_to_objects(sudoku_board_values, square_objects)
     
-    map_row_to_objects(sudoku_board_values)
+    map_row_to_objects(sudoku_solution, solution_square_objects)
 
     sudoku_board = Board(square_objects)
     sudoku_board_list = sudoku_board.get_list_representation()
@@ -142,11 +145,13 @@ def create_game_environment(sudoku_board_values):
 
     return row_wise_sudoku
     
-def compute_board_solution(row_wise_sudoku):
-    global sudoku_solution
+def get_board_solution(row_wise_sudoku):
+    sudoku_solution = []
     row_wise_sudoku = SudokuGenerator.final_grid
     sudoku_string = [str(cell_value) for row in row_wise_sudoku for cell_value in row]
     sudoku_solution = SudokuSolution(''.join(sudoku_string))
+    row_wise_solved_sudoku = sudoku_solution.get_solved_puzzle()
+    return row_wise_solved_sudoku
 
 def get_sudoku_board():
     return SudokuGenerator.final_grid
