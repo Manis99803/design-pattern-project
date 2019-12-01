@@ -86,11 +86,11 @@ def save_game():
 
 @app.route("/login", methods = ["GET"])
 def login():
-    return render_template("Login.html")
+    return render_template("login.html")
 
 @app.route("/signup")
 def signup():
-    return render_template("Signup.html")
+    return render_template("signup.html")
 
 @app.route("/older_game")
 # @LoginCheck
