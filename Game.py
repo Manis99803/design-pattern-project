@@ -1,4 +1,4 @@
-from dbdata import DataBase
+import dbdata as db
 from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
 from User import User
@@ -33,8 +33,7 @@ def user_signup():
 def user_login():
     if request.method == "POST":
         user_data = request.get_json()
-        global data_base_object
-        if data_base_object.check_user_name_in_db(user_data):
+        if db.check_user_name_in_db(user_data):
             SudokuGameLogic.create_user_object(user_data)
             session["name"] = user_data["name"]
             session["logged_in"] = True
