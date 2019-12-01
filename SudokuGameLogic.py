@@ -14,14 +14,14 @@ sudoku_board = ''
 
 # list of list containting the square details, cell details
 sudoku_board_list = list()
-square_objects = list()
 previous_state = list()
 
 
-def map_row_to_objects(sudoku_board_values, square_objects, diff_cell):
+def map_row_to_objects(sudoku_board_values, diff_cell):
     offset_value = 0
     square_number = 0
     
+    square_objects = []
     for i in range(0, 9, 3):    
         offset_value = 0
         for j in range(0, 3):
@@ -42,11 +42,13 @@ def map_row_to_objects(sudoku_board_values, square_objects, diff_cell):
             square_number += 1
             offset_value += 3
 
+    return square_objects
+
 def update_cell_value(cell_data):
-    global square_objects
     global previous_state
     global sudoku_board_list
     global sudoku_form
+    global sudoku_board
 
     # Means that the user is clearing the value in that particular cell.
     if cell_data["value"] == 0:
@@ -61,7 +63,7 @@ def update_cell_value(cell_data):
     row_wise_sudoku = sudoku_form.convert_square_wise_to_row_wise()
     column_wise_sudoku = sudoku_form.convert_square_wise_to_column_wise()
 
-    cell_objects = square_objects[int(cell_data["squareNumber"])].get_squares_cell()
+    cell_objects = sudoku_board.get_square_objects()[int(cell_data["squareNumber"])].get_squares_cell()
     square_elements = [cell.get_cell_value() for cell in cell_objects if cell.get_cell_number() != user_cell_object.get_cell_number()]
     
     row_elements = row_wise_sudoku[user_cell_object.get_row_number()]
@@ -92,11 +94,11 @@ def update_cell_value(cell_data):
         
 def restore_previous_state():
     global previous_state
-    global square_objects
+    global sudoku_board
 
     if len(previous_state) != 0:
         previous_cell_object = previous_state.pop()
-        for square in square_objects:
+        for square in sudoku_board.get_square_objects():
             for cell in square:
                 if (cell.get_column_number() == previous_cell_object.get_column_number()) and \
                     (cell.get_row_number() == previous_cell_object.get_row_number()):    
@@ -118,7 +120,6 @@ def compute_diff_cell(sudoku_board_values, sudoku_solution):
 def create_game_environment(sudoku_board_values):
     
     global sudoku_board_list
-    global square_objects
     global sudoku_form
     global sudoku_board
 
@@ -128,7 +129,7 @@ def create_game_environment(sudoku_board_values):
     diff_cell = compute_diff_cell(sudoku_board_values, sudoku_solution)
 
     # Mapping row to class structure 
-    map_row_to_objects(sudoku_board_values, square_objects, diff_cell)
+    square_objects = map_row_to_objects(sudoku_board_values,  diff_cell)
     
     sudoku_board = Board(square_objects)
     sudoku_board_list = sudoku_board.get_list_representation()
@@ -153,12 +154,12 @@ def check_board_status():
     sudoku_board.check_board_status()
 
 def get_resultant_cell_value(cell_data):
-    global square_objects
-    row_number = cell_data["rowNumber"]
-    column_number = cell_data["columnNumber"]
+    global sudoku_board
+    row_number = int(cell_data["rowNumber"])
+    column_number = int(cell_data["columnNumber"])
 
     value = dict()
-    for square in square_objects:
+    for square in sudoku_board.get_square_objects():
         for cell in square:
             if ((cell.get_row_number() == row_number) and (cell.get_column_number() == column_number)):
                 value["value"] = cell.get_actual_value()
