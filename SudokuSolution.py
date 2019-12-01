@@ -1,7 +1,5 @@
 from sudokulib.grid import StringGrid
 from sudokulib.solver import SudokuSolver
-import io
-from contextlib import redirect_stdout
 import re
 
 class SudokuSolution:
