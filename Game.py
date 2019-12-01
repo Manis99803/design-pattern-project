@@ -1,10 +1,10 @@
-import dbdata as db
+from dbdata import DataBase
 from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
 from User import User
 
 app = Flask(__name__)
-
+data_base_object = ''
 
 def LoginCheck(function_name):
     if User.instance != None:
@@ -19,8 +19,9 @@ def LoginCheck(function_name):
 def user_signup():
     if request.method == "POST":
         user_data = request.get_json()
-        if not db.check_user_name_in_db(user_data):
-            db.add_user_to_db(user_data)
+        global data_base_object
+        if not data_base_object.check_user_name_in_db(user_data):
+            data_base_object.add_user_to_db(user_data)
             return jsonify({}), 200
         else:
             return jsonify({}), 400
@@ -32,7 +33,8 @@ def user_signup():
 def user_login():
     if request.method == "POST":
         user_data = request.get_json()
-        if db.check_user_name_in_db(user_data):
+        global data_base_object
+        if data_base_object.check_user_name_in_db(user_data):
             SudokuGameLogic.create_user_object(user_data)
             session["name"] = user_data["name"]
             session["logged_in"] = True
@@ -76,8 +78,9 @@ def restore_previous_state():
 @app.route("/api/v1/save_game", methods = ["POST"])
 def save_game():
     if request.method == "POST":
+        global data_base_object
         row_wise_sudoku = request.get_json()
-        db.save_game_to_db(row_wise_sudoku)
+        data_base_object.save_game_to_db(row_wise_sudoku)
         return jsonify({}), 200
     else:
         return jsonify({}), 405
@@ -100,7 +103,8 @@ def signup():
 # @LoginCheck
 def older_game():
     user_name = "Manish"
-    sudoku_board_values = db.get_older_game_from_db(user_name)
+    global data_base_object
+    sudoku_board_values = data_base_object.get_older_game_from_db(user_name)
     row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 
@@ -116,6 +120,7 @@ def new_game():
 
 if __name__ == "__main__":
     app.secret_key = "123456789"
+    data_base_object = DataBase("Sudoku.db")
     app.run(debug = True)
     
 
