@@ -88,8 +88,7 @@ def update_cell_value(cell_data):
     
     else:
         return False
-    
-    
+        
 def restore_previous_state():
     global previous_state
     global square_objects
@@ -106,7 +105,6 @@ def restore_previous_state():
                     return cell_dictionary
     else:
         return False
-
 
 def compute_diff_cell(sudoku_board_values, sudoku_solution):
     diff_cell = dict()
@@ -158,6 +156,20 @@ def check_board_status():
                 return False
 
     return True
+
+
+def get_resultant_cell_value(cell_data):
+    global square_objects
+    row_number = cell_data["rowNumber"]
+    column_number = cell_data["columnNumber"]
+
+    value = dict()
+    for square in square_objects:
+        for cell in square:
+            if ((cell.get_row_number() == row_number) and (cell.get_column_number() == column_number)):
+                value["value"] = cell.get_actual_value()
+                return value
+
 
 def create_user_object(user_data):
     global user

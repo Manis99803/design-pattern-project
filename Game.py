@@ -86,6 +86,17 @@ def save_game():
         return jsonify({}), 405
 
 
+@app.route('/api/v1/get_hint', methods = ['POST'])
+def get_hint():
+    if request.method == 'POST':
+        cell_data = request.get_json()
+        value = SudokuGameLogic.get_resultant_value(cell_data)
+        return jsonify(value), 200
+
+    else:
+        return jsonify({}), 405
+
+
 @app.route("/login", methods = ["GET"])
 def login():
     return render_template("Login.html")
