@@ -2,6 +2,7 @@ import dbdata as db
 from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
 from User import User
+import json
 
 app = Flask(__name__)
 
@@ -48,7 +49,7 @@ def set_cell_value():
     if request.method == "POST":
         data = request.get_json()
         status = SudokuGameLogic.update_cell_value(data)
-
+    
         if status:
             # Could be optimised by having counter
             if not SudokuGameLogic.check_board_status():
@@ -56,7 +57,7 @@ def set_cell_value():
             else:
                 return jsonify({"message" : "1"}), 200
         else:
-            return jsonify({}), 400
+            return jsonify({"message" : "2"}), 200
     else:
         return jsonify({}), 405
 
@@ -103,12 +104,14 @@ def older_game():
 @app.route("/new_game")
 # @LoginCheck
 def new_game():
-
+    
     sudoku_board_values = SudokuGameLogic.get_sudoku_board()
     row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
-
+    #print(row_wise_sudoku)
     return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 if __name__ == "__main__":
     app.secret_key = "123456789"
     app.run(debug = True)
+    
+
