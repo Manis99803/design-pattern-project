@@ -79,12 +79,13 @@ def update_cell_value(cell_data):
         sudoku_board_list)
 
 
-    user_cell_object = Cell(int(cell_data["cellNumber"]), int(cell_data["value"]), int(cell_data["rowNumber"]),
+    # The actual value is being just set as '' whenever a user sends a value to update cell.
+    user_cell_object = Cell(int(cell_data["cellNumber"]), int(cell_data["value"]), '', int(cell_data["rowNumber"]),
                         int(cell_data["columnNumber"]))
     
     cell_objects = square_objects[int(cell_data["squareNumber"])].get_squares_cell()
-    
     square_elements = [cell.get_cell_value() for cell in cell_objects]
+    
     row_elements = row_wise_sudoku[user_cell_object.get_row_number()]
     row_elements = [cell["value"] for cell in row_elements]
     
