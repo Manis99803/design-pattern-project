@@ -24,9 +24,9 @@ function checkNumber(value){
 function display(cell){
     var cellValue = $(cell).children('span').first().html()
     console.log(cellValue)
-    if (cellValue == ''){
+    if (true){
         var value = prompt("Enter Value")
-        if(checkNumber(value)){
+        if(true){
             console.log($(cell).attr('data-value'))
             cellData = $(cell).attr('data-value').split(" ")
             var cellObject = {}
