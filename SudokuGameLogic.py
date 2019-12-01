@@ -9,7 +9,8 @@ import copy
 
 #Objects
 user = ''
-sudokuForm = ''
+sudoku_form = ''
+sudoku_board = ''
 
 # list of list containting the square details, cell details
 sudoku_board_list = list()
@@ -45,7 +46,7 @@ def update_cell_value(cell_data):
     global square_objects
     global previous_state
     global sudoku_board_list
-    global sudokuForm
+    global sudoku_form
 
     # Means that the user is clearing the value in that particular cell.
     if cell_data["value"] == 0:
@@ -57,8 +58,8 @@ def update_cell_value(cell_data):
                             int(cell_data["columnNumber"]))
     
     
-    row_wise_sudoku = sudokuForm.convert_square_wise_to_row_wise()
-    column_wise_sudoku = sudokuForm.convert_square_wise_to_column_wise()
+    row_wise_sudoku = sudoku_form.convert_square_wise_to_row_wise()
+    column_wise_sudoku = sudoku_form.convert_square_wise_to_column_wise()
     
     cell_objects = square_objects[int(cell_data["squareNumber"])].get_squares_cell()
     square_elements = [cell.get_cell_value() for cell in cell_objects]
@@ -118,7 +119,8 @@ def create_game_environment(sudoku_board_values):
     
     global sudoku_board_list
     global square_objects
-    global sudokuForm
+    global sudoku_form
+    global sudoku_board
 
     diff_cell = dict()
 
@@ -130,9 +132,9 @@ def create_game_environment(sudoku_board_values):
     
     sudoku_board = Board(square_objects)
     sudoku_board_list = sudoku_board.get_list_representation()
-    sudokuForm = SudokuForm(sudoku_board_list)
+    sudoku_form = SudokuForm(sudoku_board_list)
 
-    row_wise_sudoku = sudokuForm.convert_square_wise_to_row_wise()
+    row_wise_sudoku = sudoku_form.convert_square_wise_to_row_wise()
     
     return row_wise_sudoku
     
@@ -148,15 +150,7 @@ def get_sudoku_board():
     return SudokuGenerator.final_grid
 
 def check_board_status():
-    global square_objects
-
-    for square in square_objects:
-        for cell in square:
-            if cell.get_cell_value() == '':
-                return False
-
-    return True
-
+    sudoku_board.check_board_status()
 
 def get_resultant_cell_value(cell_data):
     global square_objects
@@ -169,7 +163,6 @@ def get_resultant_cell_value(cell_data):
             if ((cell.get_row_number() == row_number) and (cell.get_column_number() == column_number)):
                 value["value"] = cell.get_actual_value()
                 return value
-
 
 def create_user_object(user_data):
     global user

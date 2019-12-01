@@ -22,3 +22,11 @@ class Board:
             self.board_list.append(square.get_dictionary_representation())
 
         return self.board_list
+
+    def check_board_status(self):
+        for square in self.square_objects:
+            for cell in square:
+                if cell.get_cell_value() == '':
+                    return False
+
+        return True
