@@ -60,16 +60,16 @@ def update_cell_value(cell_data):
     
     row_wise_sudoku = sudoku_form.convert_square_wise_to_row_wise()
     column_wise_sudoku = sudoku_form.convert_square_wise_to_column_wise()
-    
+
     cell_objects = square_objects[int(cell_data["squareNumber"])].get_squares_cell()
-    square_elements = [cell.get_cell_value() for cell in cell_objects]
+    square_elements = [cell.get_cell_value() for cell in cell_objects if cell.get_cell_number() != user_cell_object.get_cell_number()]
     
     row_elements = row_wise_sudoku[user_cell_object.get_row_number()]
-    row_elements = [cell["value"] for cell in row_elements]
+    row_elements = [cell["value"] for cell in row_elements if cell["cellNumber"] != user_cell_object.get_cell_number()]
     
     column_elements = column_wise_sudoku[user_cell_object.get_column_number()]
-    column_elements = [cell["value"] for cell in column_elements]
-    
+    column_elements = [cell["value"] for cell in column_elements if cell["cellNumber"] != user_cell_object.get_cell_number()]
+
     # Means that the user is clearing the value in that particular cell.
     if user_cell_object.get_cell_value() == 0:
         cell = cell_objects[user_cell_object.get_cell_number()]
