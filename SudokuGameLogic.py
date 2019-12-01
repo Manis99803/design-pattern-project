@@ -69,6 +69,8 @@ def map_row_to_objects(sudoku_board_values, square_objects, diff_cell):
             offset_value += 3
 
 def update_cell_value(cell_data):
+    
+    
     global square_objects
     global previous_state
     global sudoku_board_list
@@ -92,7 +94,13 @@ def update_cell_value(cell_data):
     column_elements = column_wise_sudoku[user_cell_object.get_column_number()]
     column_elements = [cell["value"] for cell in column_elements]
     
-    if (user_cell_object.get_cell_value() not in square_elements) and (user_cell_object.get_cell_value() not in column_elements) \
+    if(user_cell_object.get_cell_value() == ''):
+        cell = cell_objects[user_cell_object.get_cell_number()]
+        previous_state.append(copy.deepcopy(cell_objects[user_cell_object.get_cell_number()]))
+        cell.set_cell_value(user_cell_object.get_cell_value())
+        return True
+
+    elif (user_cell_object.get_cell_value() not in square_elements) and (user_cell_object.get_cell_value() not in column_elements) \
             and (user_cell_object.get_cell_value() not in row_elements):
         
         cell = cell_objects[user_cell_object.get_cell_number()]
