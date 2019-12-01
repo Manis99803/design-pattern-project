@@ -14,7 +14,6 @@ def LoginCheck(function_name):
     else:
         return login
 
-
 @app.route("/api/v1/user_signup", methods=["POST"])
 def user_signup():
     if request.method == "POST":
