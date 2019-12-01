@@ -90,7 +90,7 @@ def save_game():
 def get_hint():
     if request.method == 'POST':
         cell_data = request.get_json()
-        value = SudokuGameLogic.get_resultant_value(cell_data)
+        value = SudokuGameLogic.get_resultant_cell_value(cell_data)
         return jsonify(value), 200
 
     else:
