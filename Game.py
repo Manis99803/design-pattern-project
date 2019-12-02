@@ -128,6 +128,7 @@ def logout():
     del(user)
     User.reset()
     user = ''
+    return redirect(url_for("login"))
     
 
 @app.route("/game_history")
