@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 data_base_object = ''
 game_logic = ''
+user = ''
 
 def LoginCheck(function_name):
     if User.instance != None:
@@ -36,9 +37,12 @@ def user_signup():
 def user_login():
     if request.method == "POST":
         global data_base_object
+        global user
         user_data = request.get_json()
         if data_base_object.check_user_name_in_db(user_data):
-            SudokuGameLogic.create_user_object(user_data)
+            
+            user = User(user_data["name"], user_data["password"])
+            
             session["name"] = user_data["name"]
             session["logged_in"] = True
             return jsonify({}), 200
@@ -110,7 +114,11 @@ def login():
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    SudokuGameLogic.delete_user_object()
+    global user
+    del(user)
+    User.reset()
+    user = ''
+    
 
 @app.route("/signup")
 def signup():

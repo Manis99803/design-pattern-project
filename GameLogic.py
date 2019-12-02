@@ -139,3 +139,4 @@ class GameLogic:
 
     def get_sudoku_form_object(self):
         return self.sudoku_form
+
