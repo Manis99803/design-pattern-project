@@ -637,7 +637,7 @@
             //console.log(sudoku_grid);
             $.ajax({type: 'POST', url: 'http://127.0.0.1:5000/api/v1/save_game', contentType: 'application/json',
                     data: JSON.stringify(sudoku_grid), success: function() {
-                        console.log('saved');
+                        alert("Game Saved");
                         
                     }});
         });
@@ -651,8 +651,8 @@
             }});
         });
         $('#log').on('click', function() {
-            $.ajax({url: 'http://127.0.0.1:5000/api/v1/logout', success: function() {
-                window.location.replace('http://127.0.0.1:5000/api/v1/user_login');
+            $.ajax({url: 'http://127.0.0.1:5000/logout', success: function() {
+                window.location.replace('http://127.0.0.1:5000/login');
             }});
         });
     });

@@ -28,7 +28,7 @@ class DataBase:
         
         if game_number != None:
 
-            self.cursor.execute("DELETE * FROM Board where name = ? and  gameNumber = ?", [user_name, game_number])
+            self.cursor.execute("DELETE FROM Board where name = ? and  gameNumber = ?", [user_name, game_number])
             self.connection_state.commit()
 
             board_values = [i for row in row_wise_sudoku for i in row]
@@ -69,7 +69,6 @@ class DataBase:
         query = "SELECT * FROM Board where name = ?"
         self.cursor.execute(query, [user_name])
         boards = self.cursor.fetchall()
-        print(boards)
         if len(boards) == 0:
             return False
         

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, session, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from User import User
 import json
 from GameLogic import Game
@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 user = ''
 game_object = ''
+session = dict()
 
 def LoginCheck(function_name):
     if User.instance != None:
@@ -42,8 +43,9 @@ def user_signup():
 def user_login():
     if request.method == "POST":
         global user
-        
         global game_object
+        global session
+        
         user_data = dict()
         user_data["name"] = request.form["email"]
         user_data["password"] = request.form["pass"]
@@ -96,11 +98,13 @@ def restore_previous_state():
 def save_game():
     if request.method == "POST":
         global game_object
+        global session
+        
         row_wise_sudoku = request.get_json()
         if "game_number" in session:
-            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session.get("name"), session.get("game_number"))
+            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session["name"], session["game_number"])
         else:
-            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session.get("name"))
+            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session["name"])
         return jsonify({}), 200
     else:
         return jsonify({}), 405
@@ -120,38 +124,50 @@ def get_hint():
 
 @app.route("/login", methods = ["GET"])
 def login():
-    return render_template("login.html")
+    global session
+    if 'logged_in' in session:
+        print(session.get("logged_in"))
+        print(session.get("game_number"))
+        return redirect(url_for("game_history"))
+    else:
+        return render_template("login.html")
 
 
 @app.route("/logout", methods=["GET"])
 def logout():
     global user
+    global session
     del(user)
     User.reset()
     user = ''
+    session = dict()
     return redirect(url_for("login"))
     
-
+@LoginCheck
 @app.route("/game_history")
 def game_history():
     
     global game_object
-    sudoku_games = game_object.get_data_base_object().get_older_game_from_db(session.get("name"))
+    global session
+    
+    sudoku_games = game_object.get_data_base_object().get_older_game_from_db(session["name"])
     # sudoku_games = game_object.get_data_base_object().get_older_game_from_db("msoni6226@gmail.com")
     if sudoku_games == False:
         return redirect(url_for("new_game"))
     else:
         return render_template("previous_games.html", sudoku_games = sudoku_games)
 
+
 @app.route("/Signup")
 def Signup():
     return render_template("signup.html")
 
+@LoginCheck
 @app.route("/older_game/<game_number>")
-# @LoginCheck
 def older_game(game_number):
     user_name = "msoni6226@gmail.com"
     global game_object
+    global session
     
     session["game_number"] = game_number
     sudoku_board_values = game_object.get_data_base_object().get_specific_game_from_db(user_name, int(game_number))
@@ -164,8 +180,8 @@ def older_game(game_number):
     return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 
+@LoginCheck
 @app.route("/new_game")
-# @LoginCheck
 def new_game():
     global game_object
     game_object.generate_board_values()
