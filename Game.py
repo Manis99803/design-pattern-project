@@ -50,7 +50,7 @@ def user_login():
             user = User(user_data["name"], user_data["password"])     
             session["name"] = user_data["name"]
             session["logged_in"] = True
-            return redirect(url_for("new_game"))
+            return redirect(url_for("game_history"))
         else:
             return render_template("login.html")
     else:
@@ -124,6 +124,17 @@ def logout():
     User.reset()
     user = ''
     
+
+
+@app.route("/game_history")
+def game_history():
+    global user
+    global data_base_object
+    sudoku_games = data_base_object.get_older_game_from_db(session.get("name"))
+    if not sudoku_games:
+        return redirect(url_for("new_game"))
+    else:
+        return render_template("previous_game.html", sudoku_games = sudoku_games)
 
 @app.route("/Signup")
 def Signup():
