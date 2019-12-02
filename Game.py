@@ -147,10 +147,11 @@ def Signup():
 @app.route("/older_game/<game_number>")
 # @LoginCheck
 def older_game(game_number):
-    user_name = "Manish"
+    user_name = "msoni6226@gmail.com"
     global game_object
     
-    sudoku_board_values = game_object.get_data_base_object().get_older_game_from_db(user_name, int(game_number))
+    sudoku_board_values = game_object.get_data_base_object().get_specific_game_from_db(user_name, int(game_number))
+    print(sudoku_board_values)
     game_object.set_board_values(sudoku_board_values)
     game_object.set_values()
 

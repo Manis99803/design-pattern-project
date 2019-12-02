@@ -128,9 +128,7 @@
         $('table').click(function() {
             var tb = $(this).attr('id');
             console.log(tb);
-            $.ajax({url: "http://127.0.0.1:5000/older_game/"+tb, success: function() {
-                window.location.replace('http://127.0.0.1:5000/');
-            }})
+            window.location.replace("http://127.0.0.1:5000/older_game/"+tb);
         })
     })
 </script>
