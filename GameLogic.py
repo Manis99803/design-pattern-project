@@ -1,6 +1,6 @@
 from SudokuForm import SudokuForm
 from SudokuSolution import SudokuSolution
-import SudokuGenerator
+from SudokuBoardGenerator import SudokuBoardGenerator
 from Board import Board
 from Cell import Cell
 import copy
@@ -94,8 +94,7 @@ class GameLogic:
     def create_game_environment(self):
         
         diff_cell = dict()
-        print("In create game environment function")
-
+    
         self.sudoku_solution = SudokuSolution(self.sudoku_board_values)
         diff_cell = self.compute_diff_cell(self.sudoku_solution.get_solved_sudoku())
 
@@ -125,12 +124,12 @@ class GameLogic:
         else:
             return False
 
-    def get_sudoku_board(self):
-        return SudokuGenerator.final_grid
-
     def check_board_status(self):
         return self.sudoku_board.check_board_status()
     
+    def get_sudoku_board(self):
+        return SudokuBoardGenerator.get_sudoku_board()
+        
     def get_resultant_cell_value(self, cell_data):
         return self.sudoku_board.get_resultant_cell_value(cell_data)
 

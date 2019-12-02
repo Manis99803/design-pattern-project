@@ -1,7 +1,7 @@
 from dbdata import DataBase
 from flask import Flask, render_template, jsonify, request, session
-import SudokuGameLogic
 from User import User
+from SudokuBoardGenerator import SudokuBoardGenerator
 from GameLogic import GameLogic
 
 app = Flask(__name__)
@@ -129,8 +129,10 @@ def signup():
 def older_game():
     user_name = "Manish"
     global data_base_object
+    global game_logic
     sudoku_board_values = data_base_object.get_older_game_from_db(user_name)
-    row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
+    game_logic = GameLogic(sudoku_board_values)
+    row_wise_sudoku = game_logic.create_game_environment()
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 
 
@@ -139,7 +141,7 @@ def older_game():
 def new_game():
     
     global game_logic
-    sudoku_board_values = SudokuGameLogic.get_sudoku_board()
+    sudoku_board_values = SudokuBoardGenerator.get_sudoku_board()
     game_logic = GameLogic(sudoku_board_values)
     row_wise_sudoku = game_logic.create_game_environment()
 
