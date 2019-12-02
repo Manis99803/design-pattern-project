@@ -642,13 +642,10 @@
         });
         $('.purple').on('click', function() {
             $.ajax({type: 'POST', url: 'http://127.0.0.1:5000/api/v1/restore_previous_state', success: function(response) {
-                var cell_id = [];
-                for(const key of Object.keys(response)) {
-                    cell_id.push(key + '_' + response[key]);
-                }
-                cell_id.pop();
-                cell_id.pop();
-                cell_id = cell_id.join('_');
+                var cell_id = "squareNumber_" + response['squareNumber'] + "_cellNumber_" + response['cellNumber'] +
+                "_rowNumber_" + response['rowNumer'] + "_columnNumber_" + response['columnNumber'];
+                console.log(cell_id);
+                
                 $('#' + cell_id + ' > span').text(response['value']);
             }});
         });
