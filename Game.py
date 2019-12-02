@@ -16,6 +16,10 @@ def LoginCheck(function_name):
         return login
 
 
+@app.route('/')
+def homepage():
+    return render_template('index.html');
+
 @app.route("/api/v1/user_signup", methods=["POST"])
 def user_signup():
     if request.method == "POST":
