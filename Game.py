@@ -134,14 +134,15 @@ def logout():
 def game_history():
     global user
     global data_base_object
-    sudoku_games = data_base_object.get_older_game_from_db(session.get("name"))
-    # sudoku_games = data_base_object.get_older_game_from_db("msoni6226@gmail.com")
+    #sudoku_games = data_base_object.get_older_game_from_db(session.get("name"))
+    sudoku_games = data_base_object.get_older_game_from_db("msoni6226@gmail.com")
+    print(sudoku_games)
     if sudoku_games == False:
         return redirect(url_for("new_game"))
     else:
         return render_template("previous_games.html", sudoku_games = sudoku_games)
 
-@app.route("/Signup")
+@app.route("/signup")
 def Signup():
     return render_template("signup.html")
 

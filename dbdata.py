@@ -51,7 +51,7 @@ class DataBase:
         query = "SELECT * FROM Board where name = ?"
         self.cursor.execute(query, [user_name,])
         boards = self.cursor.fetchall()
-        
+        print(boards)
         if len(boards) == 0:
             return False
         
