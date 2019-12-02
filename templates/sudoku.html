@@ -114,6 +114,7 @@
         }
         
         this.board = this.boardGenerator(this.n, this.fixCellsNr);
+        this.cellsComplete = cells_filled;
         
         return this;
     };
@@ -148,7 +149,7 @@
     Generate the sudoku board
     */
     var cell_info = [];
-
+    var cells_filled = 0;
     Sudoku.prototype.boardGenerator = function() {
         var index = -1;
         this.board_init = []
@@ -158,6 +159,7 @@
                 cell_info.push("squareNumber_{{ elements['squareNumber'] }}_cellNumber_{{ elements['cellNumber']}}_rowNumber_{{ elements['rowNumber']}}_columnNumber_{{ elements['columnNumber']}}");
                 {% if elements['value']|string|length %}
                     this.board_init[index] = {{ elements['value'] }};
+                    ++cells_filled;
                 {% endif %}
             {% endfor %}
         {% endfor %}
