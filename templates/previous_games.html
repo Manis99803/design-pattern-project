@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Sudoku</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='login/images/icons/favicon.ico') }}"/>
+    <!--link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}"-->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sudoku.css') }}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <style>
+        p {
+            font-family: 'Ubuntu', sans-serif;
+            font-size: x-large;
+            color: #134f83 !important;
+            text-align: center;
+        }
+        #heading {
+            margin: 100px;
+            font-size: xx-large;
+        }
+        .info {
+            position: relative;
+            margin: auto;
+            direction: rtl;
+        }
+        /*body {
+            background-image: -webkit-linear-gradient(90deg, #ffffff 0%, #f2f2f2 100%);
+        }*/
+        .navbar-inverse {
+            background-color: #003300;
+            border-color: #003300;
+        }
+        .row {
+            margin: 100px;
+        }
+        a {
+            color: #fff !important;
+        }
+        .table{
+            background: #134f83 !important;
+            color: white !important;
+        }
+        td:nth-child(4), td:nth-child(7) {
+            border-left: solid 4px #fff !important;
+        }
+        tr:nth-child(3), tr:nth-child(6) {
+            border-bottom: solid 4px #fff;
+        }
+        td {
+            padding: 10px !important;
+            text-align: center;
+            font-family: 'Ubuntu', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+            <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+                <div class="container">
+                    <div class="navbar-header">
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="./" class="navbar-brand">Sudoku</a>
+                    </div>
+                    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                        <a href="#">Home</a>
+                        </li>
+                        <li>
+                        <a href="http://127.0.0.1:5000/logout" id="save">log out</a>
+                        </li>
+                        <!--li>
+                        <a href="http://127.0.0.1:5000/signup" id="log">sign up</a>
+                        </li-->
+                    </ul>
+                    </nav>
+                </div>
+            </header>
+            <p id="heading">Your Saved Games</p>
+            <div class="row">
+                {% set count = [1] %}
+                {% for game in sudoku_games %}
+                    <div class="col-lg-4">
+                        <table id="{{ count[0] }}" class="table table-bordered table-dark">
+                            {% for row in game %}
+                                <tr>
+                                    {% for ele in row %}
+                                        {% if ele|string|length %}
+                                            <td>{{ ele }}</td>
+                                        {% else %}
+                                            <td>&nbsp;</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        <p class="game">Game #: {{ count[0] }}</p>
+                    </div>
+                    {% if count.append(count.pop() + 1) %}{% endif %}
+                {% endfor %}
+            </div>
+		</div>
+	</div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('table').click(function() {
+            var tb = $(this).attr('id');
+            console.log(tb);
+            window.location.replace("http://127.0.0.1:5000/older_game/"+tb);
+        })
+    })
+</script>
+</html>
