@@ -642,10 +642,22 @@
         });
         $('.purple').on('click', function() {
             $.ajax({type: 'POST', url: 'http://127.0.0.1:5000/api/v1/restore_previous_state', success: function(response) {
+<<<<<<< HEAD
+                var cell_id = [];
+                console.log(response)
+                for(const key of Object.keys(response)) {
+                    cell_id.push(key + '_' + response[key]);
+                }
+                cell_id.pop();
+                cell_id.pop();
+                cell_id = cell_id.join('_');
+                console.log(cell_id)
+=======
                 var cell_id = "squareNumber_" + response['squareNumber'] + "_cellNumber_" + response['cellNumber'] +
-                "_rowNumber_" + response['rowNumber'] + "_columnNumber_" + response['columnNumber'];
+                "_rowNumber_" + response['rowNumer'] + "_columnNumber_" + response['columnNumber'];
                 console.log(cell_id);
                 
+>>>>>>> c39714b782d84a222aa8b727ec8ee007f54f1382
                 $('#' + cell_id + ' > span').text(response['value']);
             }});
         });

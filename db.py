@@ -87,7 +87,8 @@ cursor.execute('''CREATE TABLE Board
                     cell78 INTEGER,
                     cell79 INTEGER,
                     cell80 INTEGER,
-                    PRIMARY KEY(name, gameNumber)
+                    PRIMARY KEY(name, gameNumber),
+                    FOREIGN KEY (name) REFERENCES User(name)
                     )
                 ''')
 

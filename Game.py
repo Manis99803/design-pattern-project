@@ -19,6 +19,11 @@ def LoginCheck(function_name):
     else:
         return login
 
+
+@app.route('/')
+def homepage():
+    return render_template('index.html');
+
 @app.route("/api/v1/user_signup", methods=["POST"])
 def user_signup():
     if request.method == "POST":
@@ -94,7 +99,7 @@ def save_game():
     if request.method == "POST":
         global data_base_object
         row_wise_sudoku = request.get_json()
-        data_base_object.save_game_to_db(row_wise_sudoku)
+        data_base_object.save_game_to_db(row_wise_sudoku, session.get("name"))
         return jsonify({}), 200
     else:
         return jsonify({}), 405
@@ -125,16 +130,16 @@ def logout():
     user = ''
     
 
-
 @app.route("/game_history")
 def game_history():
     global user
     global data_base_object
     sudoku_games = data_base_object.get_older_game_from_db(session.get("name"))
-    if not sudoku_games:
+    # sudoku_games = data_base_object.get_older_game_from_db("msoni6226@gmail.com")
+    if sudoku_games == False:
         return redirect(url_for("new_game"))
     else:
-        return render_template("previous_game.html", sudoku_games = sudoku_games)
+        return render_template("previous_games.html", sudoku_games = sudoku_games)
 
 @app.route("/Signup")
 def Signup():
