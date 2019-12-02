@@ -1,18 +1,62 @@
 from SudokuForm import SudokuForm
 from SudokuSolution import SudokuSolution
 from SudokuBoardGenerator import SudokuBoardGenerator
+from dbdata import DataBase
 from Board import Board
 from Cell import Cell
 import copy
 from Square import Square
 
 class GameLogic:
+    def __init__(self, game_environment):
+        self.game_environment = game_environment
+
+    def check_board_status(self):
+        return self.game_environment.get_sudoku_board_object().check_board_status()
+    
+    def get_sudoku_board(self):
+        return SudokuBoardGenerator.get_sudoku_board()
+        
+    def get_resultant_cell_value(self, cell_data):
+        return self.game_environment.get_sudoku_board_object().get_resultant_cell_value(cell_data)
+
+
+class GameEnvironment:
     def __init__(self, sudoku_board_values):
         self.sudoku_board_values = sudoku_board_values
-        self.previous_state = []
+    
+    def create_game_environment(self):
+        
+        diff_cell = dict()
+    
+        self.sudoku_solution = SudokuSolution(self.sudoku_board_values)
+        diff_cell = self.sudoku_solution.compute_diff_cell()
 
+        map_objects = MapObjects(self.sudoku_board_values)
+        # Mapping row to class structure 
+        square_objects = map_objects.map_row_to_objects(diff_cell)
+    
+        self.sudoku_board = Board(square_objects)
+        sudoku_board_list = self.sudoku_board.get_list_representation()
+        self.sudoku_form = SudokuForm(sudoku_board_list)
+
+        row_wise_sudoku = self.sudoku_form.convert_square_wise_to_row_wise()
+    
+        return row_wise_sudoku
+
+    def get_sudoku_form_object(self):
+        return self.sudoku_form
+
+    def get_sudoku_board_object(self):
+        return self.sudoku_board
+
+
+class MapObjects:
+    def __init__(self, sudoku_board_values):
+        self.sudoku_board_values = sudoku_board_values
 
     def map_row_to_objects(self, diff_cell):
+
         offset_value = 0
         square_number = 0
         
@@ -39,13 +83,11 @@ class GameLogic:
 
         return square_objects
 
-    def compute_diff_cell(self, sudoku_solution):
-        diff_cell = dict()
-        for i in range(9):
-            for j in range(9):
-                if self.sudoku_board_values[i][j] != sudoku_solution[i][j]:
-                    diff_cell[(i, j)] = sudoku_solution[i][j]
-        return diff_cell    
+
+class StateChange:
+    def __init__(self, game_environment):
+        self.previous_state = []
+        self.game_environment = game_environment
 
     def update_cell_value(self, cell_data):
     
@@ -59,10 +101,10 @@ class GameLogic:
                                 int(cell_data["columnNumber"]))
         
         
-        row_wise_sudoku = self.sudoku_form.convert_square_wise_to_row_wise()
-        column_wise_sudoku = self.sudoku_form.convert_square_wise_to_column_wise()
+        row_wise_sudoku = self.game_environment.get_sudoku_form_object().convert_square_wise_to_row_wise()
+        column_wise_sudoku = self.game_environment.get_sudoku_form_object().convert_square_wise_to_column_wise()
 
-        cell_objects = self.sudoku_board.get_square_objects()[int(cell_data["squareNumber"])].get_squares_cell()
+        cell_objects = self.game_environment.get_sudoku_board_object().get_square_objects()[int(cell_data["squareNumber"])].get_squares_cell()
         square_elements = [cell.get_cell_value() for cell in cell_objects if cell.get_cell_number() != user_cell_object.get_cell_number()]
         
         row_elements = row_wise_sudoku[user_cell_object.get_row_number()]
@@ -90,30 +132,12 @@ class GameLogic:
         
         else:
             return False
-    
-    def create_game_environment(self):
-        
-        diff_cell = dict()
-    
-        self.sudoku_solution = SudokuSolution(self.sudoku_board_values)
-        diff_cell = self.compute_diff_cell(self.sudoku_solution.get_solved_sudoku())
-
-        # Mapping row to class structure 
-        square_objects = self.map_row_to_objects(diff_cell)
-    
-        self.sudoku_board = Board(square_objects)
-        sudoku_board_list = self.sudoku_board.get_list_representation()
-        self.sudoku_form = SudokuForm(sudoku_board_list)
-
-        row_wise_sudoku = self.sudoku_form.convert_square_wise_to_row_wise()
-    
-        return row_wise_sudoku
 
     def restore_previous_state(self):
     
         if len(self.previous_state) != 0:
             previous_cell_object = self.previous_state.pop()
-            for square in self.sudoku_board.get_square_objects():
+            for square in self.game_environment.get_sudoku_board_object().get_square_objects():
                 for cell in square:
                     if (cell.get_column_number() == previous_cell_object.get_column_number()) and \
                         (cell.get_row_number() == previous_cell_object.get_row_number()):    
@@ -124,18 +148,50 @@ class GameLogic:
         else:
             return False
 
-    def check_board_status(self):
-        return self.sudoku_board.check_board_status()
-    
-    def get_sudoku_board(self):
-        return SudokuBoardGenerator.get_sudoku_board()
+
+class Game:
+    def __init__(self, data_base_name):
+        self.data_base_object = DataBase(data_base_name)
+        self.game_environment = ''
+        self.game_logic = ''
+        self.state_change = ''
+        self.user_object = ''
         
-    def get_resultant_cell_value(self, cell_data):
-        return self.sudoku_board.get_resultant_cell_value(cell_data)
+    def set_values(self):
+        self.set_game_environment_object()
+        self.set_game_logic_object()
+        self.set_state_change_object()
+        return self.sudoku_board_values
 
-    def get_board_object(self):
-        return self.sudoku_board
+    def set_board_values(self, sudoku_board_values):
+        self.sudoku_board_values = sudoku_board_values
+    
+    def generate_board_values(self):
+        self.sudoku_board_values = SudokuBoardGenerator.get_sudoku_board()
 
-    def get_sudoku_form_object(self):
-        return self.sudoku_form
+    def get_data_base_object(self):
+        return self.data_base_object
+    
+    def get_game_environment_object(self):
+        return self.game_environment
 
+    def set_game_environment_object(self):
+        self.game_environment = GameEnvironment(self.sudoku_board_values)
+
+    def get_game_logic_object(self):
+        return self.game_logic
+
+    def set_game_logic_object(self):
+        self.game_logic = GameLogic(self.game_environment)
+
+    def get_state_change_object(self):
+        return self.state_change
+
+    def set_state_change_object(self):
+        self.state_change = StateChange(self.game_environment)
+    
+    def get_user_object(self):
+        return self.user_object
+
+    def set_user_object(self, user_object):
+        self.user_object = user_object

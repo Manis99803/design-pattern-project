@@ -42,6 +42,14 @@ class SudokuSolution:
 
         return self.row_wise_solved_sudoku
 
+    def compute_diff_cell(self):
+        diff_cell = dict()
+        sudoku_solution = self.get_solved_sudoku()
+        for i in range(9):
+            for j in range(9):
+                if self.row_wise_sudoku[i][j] != sudoku_solution[i][j]:
+                    diff_cell[(i, j)] = sudoku_solution[i][j]
+        return diff_cell
 
 
 
