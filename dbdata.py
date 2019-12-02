@@ -24,27 +24,45 @@ class DataBase:
         self.cursor.execute(query, [user_object["name"], user_object["password"], ])
         self.connection_state.commit()
 
-    def save_game_to_db(self, row_wise_sudoku, user_name):
+    def save_game_to_db(self, row_wise_sudoku, user_name, game_number = None):
         
-        query = "SELECT count(*) FROM Board where name = ?"
-        self.cursor.execute(query, [user_name])
-        number_of_games = self.cursor.fetchone()
-        game_number = int()
+        if game_number != None:
 
-        if number_of_games == None:
-            game_number = 1
+            self.cursor.execute("DELETE * FROM Board where name = ? and  gameNumber = ?", [user_name, game_number])
+            self.connection_state.commit()
+
+            board_values = [i for row in row_wise_sudoku for i in row]
+            board_values.insert(0, user_name)
+            board_values.insert(1, game_number)
+            
+            self.cursor.execute("INSERT INTO Board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+            ?, ?, ?, ?, ?, ?, ?)", board_values)
+
+            self.connection_state.commit()
+        
         else:
-            game_number += 1
 
-        board_values = [i for row in row_wise_sudoku for i in row]
-        board_values.insert(0, user_name)
-        board_values.insert(1, game_number)
+            query = "SELECT count(*) FROM Board where name = ?"
+            self.cursor.execute(query, [user_name])
+            number_of_games = self.cursor.fetchone()
+            game_number = int()
+
+            if number_of_games == None:
+                game_number = 1
+            else:
+                game_number += 1
+
+            board_values = [i for row in row_wise_sudoku for i in row]
+            board_values.insert(0, user_name)
+            board_values.insert(1, game_number)
+
+            self.cursor.execute("INSERT INTO Board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+            ?, ?, ?, ?, ?, ?, ?)", board_values)
+
+            self.connection_state.commit()
         
-        self.cursor.execute("INSERT INTO Board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-        ?, ?, ?, ?, ?, ?, ?)", board_values)
-
-        self.connection_state.commit()
 
     def get_older_game_from_db(self, user_name):
     

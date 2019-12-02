@@ -97,7 +97,10 @@ def save_game():
     if request.method == "POST":
         global game_object
         row_wise_sudoku = request.get_json()
-        game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session.get("name"))
+        if "game_number" in session:
+            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session.get("name"), session.get("game_number"))
+        else:
+            game_object.get_data_base_object().save_game_to_db(row_wise_sudoku, session.get("name"))
         return jsonify({}), 200
     else:
         return jsonify({}), 405
@@ -150,6 +153,7 @@ def older_game(game_number):
     user_name = "msoni6226@gmail.com"
     global game_object
     
+    session["game_number"] = game_number
     sudoku_board_values = game_object.get_data_base_object().get_specific_game_from_db(user_name, int(game_number))
     print(sudoku_board_values)
     game_object.set_board_values(sudoku_board_values)
