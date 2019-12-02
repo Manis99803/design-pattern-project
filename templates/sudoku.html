@@ -34,10 +34,10 @@
                     </ul>
                     </li-->
                     <li>
-                    <a id="save">save game</a>
+                    <a href="#" id="save">save game</a>
                     </li>
                     <li>
-                    <a id="log" href = "{{ url_for('logout') }}">log out</a>
+                    <a href="#" id="log">log out</a>
                     </li>
                 </ul>
                 </nav>
@@ -148,7 +148,7 @@
     Generate the sudoku board
     */
     var cell_info = [];
-
+    var cells_filled = 0;
     Sudoku.prototype.boardGenerator = function() {
         var index = -1;
         this.board_init = []
@@ -158,6 +158,7 @@
                 cell_info.push("squareNumber_{{ elements['squareNumber'] }}_cellNumber_{{ elements['cellNumber']}}_rowNumber_{{ elements['rowNumber']}}_columnNumber_{{ elements['columnNumber']}}");
                 {% if elements['value']|string|length %}
                     this.board_init[index] = {{ elements['value'] }};
+                    ++cells_filled;
                 {% endif %}
             {% endfor %}
         {% endfor %}

@@ -46,12 +46,12 @@ class DataBase:
 
         self.connection_state.commit()
 
-    def get_older_game_from_db(self, user_name):
+    def get_older_game_from_db(self, user_name, game_number):
     
-        query = "SELECT * FROM Board where name = ?"
-        self.cursor.execute(query, [user_name,])
+        query = "SELECT * FROM Board where name = ? and gameNumber = ?"
+        self.cursor.execute(query, [user_name, game_number])
         boards = self.cursor.fetchall()
-        
+        print(boards)
         if len(boards) == 0:
             return False
         
