@@ -30,3 +30,15 @@ class Board:
                     return False
 
         return True
+
+    def get_resultant_cell_value(self, cell_data):
+        
+        row_number = int(cell_data["rowNumber"])
+        column_number = int(cell_data["columnNumber"])
+
+        value = dict()
+        for square in self.sudoku_board.get_square_objects():
+            for cell in square:
+                if ((cell.get_row_number() == row_number) and (cell.get_column_number() == column_number)):
+                    value["value"] = cell.get_actual_value()
+                    return value

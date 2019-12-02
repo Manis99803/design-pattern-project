@@ -3,14 +3,17 @@ from sudokulib.solver import SudokuSolver
 import re
 
 class SudokuSolution:
-    ''' row_wise_solved_sudoku should be a string with with the missing values represented either as DOT(.) or ZERO(0)'''
-    ''' Example : [[1, 0, 3], [0, 2, 1]] = "102021 or 1.2.21" '''
 
-    def __init__(self, row_wise_unsolved_sudoku):
-        self.row_wise_unsolved_sudoku = row_wise_unsolved_sudoku
+    def __init__(self, row_wise_sudoku):
+        self.row_wise_sudoku = row_wise_sudoku
 
-    def get_solved_puzzle(self):
-        solver = SudokuSolver(self.row_wise_unsolved_sudoku, grid_class=StringGrid)
+    def get_solved_sudoku(self):
+        
+        ''' SudokuSolver takes the sudoku as string
+         Example : [[1, 0, 3], [0, 2, 1]] = "102021 or 1.2.21" '''         
+        
+        solver = SudokuSolver(''.join([str(cell_value) for row in self.row_wise_sudoku for cell_value in row]), 
+                grid_class=StringGrid)
         solver.run()
         self.solved_string = str(solver)
 
@@ -38,7 +41,6 @@ class SudokuSolution:
                 continue
 
         return self.row_wise_solved_sudoku
-
 
 
 

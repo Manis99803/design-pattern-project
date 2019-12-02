@@ -2,9 +2,12 @@ from dbdata import DataBase
 from flask import Flask, render_template, jsonify, request, session
 import SudokuGameLogic
 from User import User
+from GameLogic import GameLogic
 
 app = Flask(__name__)
+
 data_base_object = ''
+game_logic = ''
 
 def LoginCheck(function_name):
     if User.instance != None:
@@ -49,11 +52,12 @@ def user_login():
 def set_cell_value():
     if request.method == "POST":
         data = request.get_json()
-        status = SudokuGameLogic.update_cell_value(data)
+        global game_logic
+        status = game_logic.update_cell_value(data)
     
         if status:
             # Could be optimised by having counter
-            if not SudokuGameLogic.check_board_status():
+            if not game_logic.check_board_status():
                 return jsonify({"message": "0"}), 200       # 0 means the game is still on and 1 means the user is winner.
             else:
                 return jsonify({"message" : "1"}), 200
@@ -66,7 +70,8 @@ def set_cell_value():
 @app.route("/api/v1/restore_previous_state", methods = ["POST"])
 def restore_previous_state():
     if request.method == "POST":
-        previous_cell = SudokuGameLogic.restore_previous_state()
+        global game_logic
+        previous_cell = game_logic.restore_previous_state()
         if previous_cell == False:
             return jsonify({}), 400
         else:
@@ -90,7 +95,8 @@ def save_game():
 def get_hint():
     if request.method == 'POST':
         cell_data = request.get_json()
-        value = SudokuGameLogic.get_resultant_cell_value(cell_data)
+        global game_logic
+        value = game_logic.get_resultant_cell_value(cell_data)
         return jsonify(value), 200
 
     else:
@@ -124,8 +130,10 @@ def older_game():
 # @LoginCheck
 def new_game():
     
+    global game_logic
     sudoku_board_values = SudokuGameLogic.get_sudoku_board()
-    row_wise_sudoku = SudokuGameLogic.create_game_environment(sudoku_board_values)
+    game_logic = GameLogic(sudoku_board_values)
+    row_wise_sudoku = game_logic.create_game_environment()
 
     return render_template("Board.html", row_wise_board = row_wise_sudoku)
 
