@@ -23,9 +23,14 @@
 
     <style>
         p {
-            color: #fff;
             font-family: 'Ubuntu', sans-serif;
             font-size: x-large;
+            color: #134f83 !important;
+            text-align: center;
+        }
+        #heading {
+            margin: 100px;
+            font-size: xx-large;
         }
         .info {
             position: relative;
@@ -92,6 +97,7 @@
                     </nav>
                 </div>
             </header>
+            <p id="heading">Your Saved Games</p>
             <div class="row">
                 {% set count = [1] %}
                 {% for game in sudoku_games %}
@@ -109,6 +115,7 @@
                                 </tr>
                             {% endfor %}
                         </table>
+                        <p class="game">Game #: {{ count[0] }}</p>
                     </div>
                     {% if count.append(count.pop() + 1) %}{% endif %}
                 {% endfor %}
