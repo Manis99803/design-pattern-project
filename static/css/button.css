@@ -1,0 +1,65 @@
+button{
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #fff;
+  border-radius: 7px;
+  transition: all 0.2s;
+  margin: 5px;
+  border-bottom: 0px solid #eee;
+  outline: none;
+  font-size: x-large;
+  font-family: Open Sans;
+}
+
+button:active{
+  transform: scaleX(0.9) translateY(4px);
+}
+
+button.green{
+  background: #82CA9D;
+}
+button.green:not(:active){
+  border-bottom: 4px solid #62AA7D;
+}
+
+button.red{
+  background: #F7977A;
+}
+button.red:not(:active){
+  border-bottom: 4px solid #D7775A;
+}
+
+button.blue{
+  background: #7EA7D8;
+}
+button.blue:not(:active){
+  border-bottom: 4px solid #5E87B8;
+}
+
+.yellow{
+  border-radius: 10px;
+  border: none;
+  font-decoration:none;
+  padding: 10px;
+  color: #222;
+  border-radius: 7px;
+  transition: all 0.2s;
+  margin: 5px;
+  border-bottom: 0px solid #eee;
+  background: #FDC68A;
+}
+.yellow:not(:active){
+  border-bottom: 4px solid #DDA66A;
+}
+
+button.purple{
+  background: #135f14;
+  margin: auto;
+  display: block;
+}
+button.purple:not(:active){
+  border-bottom: 4px solid #3c553d;
+}

@@ -37,7 +37,7 @@ class Board:
         column_number = int(cell_data["columnNumber"])
 
         value = dict()
-        for square in self.square_objects():
+        for square in self.square_objects:
             for cell in square:
                 if ((cell.get_row_number() == row_number) and (cell.get_column_number() == column_number)):
                     value["value"] = cell.get_actual_value()

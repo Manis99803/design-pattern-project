@@ -1,6 +1,7 @@
 from dbdata import DataBase
-from flask import Flask, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from User import User
+import json
 from SudokuBoardGenerator import SudokuBoardGenerator
 from GameLogic import GameLogic
 
@@ -18,17 +19,19 @@ def LoginCheck(function_name):
     else:
         return login
 
-
 @app.route("/api/v1/user_signup", methods=["POST"])
 def user_signup():
     if request.method == "POST":
-        user_data = request.get_json()
+        user_data = dict()
+        user_data["name"] = request.form["email"]
+        user_data["password"] = request.form["pass"]
+        
         global data_base_object
         if not data_base_object.check_user_name_in_db(user_data):
             data_base_object.add_user_to_db(user_data)
-            return jsonify({}), 200
+            return redirect(url_for("login"))
         else:
-            return jsonify({}), 400
+            return jsonify(url_for("Signup"))
     else:
         return jsonify({}), 405
 
@@ -38,16 +41,18 @@ def user_login():
     if request.method == "POST":
         global data_base_object
         global user
-        user_data = request.get_json()
+        
+        user_data = dict()
+        user_data["name"] = request.form["email"]
+        user_data["password"] = request.form["pass"]
+
         if data_base_object.check_user_name_in_db(user_data):
-            
-            user = User(user_data["name"], user_data["password"])
-            
+            user = User(user_data["name"], user_data["password"])     
             session["name"] = user_data["name"]
             session["logged_in"] = True
-            return jsonify({}), 200
+            return redirect(url_for("new_game"))
         else:
-            return jsonify({}), 400
+            return render_template("login.html")
     else:
         return jsonify({}), 405
 
@@ -66,7 +71,7 @@ def set_cell_value():
             else:
                 return jsonify({"message" : "1"}), 200
         else:
-            return jsonify({}), 400
+            return jsonify({"message" : "2"}), 200
     else:
         return jsonify({}), 405
 
@@ -109,7 +114,7 @@ def get_hint():
 
 @app.route("/login", methods = ["GET"])
 def login():
-    return render_template("Login.html")
+    return render_template("login.html")
 
 
 @app.route("/logout", methods=["GET"])
@@ -120,9 +125,9 @@ def logout():
     user = ''
     
 
-@app.route("/signup")
-def signup():
-    return render_template("Signup.html")
+@app.route("/Signup")
+def Signup():
+    return render_template("signup.html")
 
 @app.route("/older_game")
 # @LoginCheck
@@ -133,7 +138,7 @@ def older_game():
     sudoku_board_values = data_base_object.get_older_game_from_db(user_name)
     game_logic = GameLogic(sudoku_board_values)
     row_wise_sudoku = game_logic.create_game_environment()
-    return render_template("Board.html", row_wise_board = row_wise_sudoku)
+    return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 
 @app.route("/new_game")
@@ -145,7 +150,7 @@ def new_game():
     game_logic = GameLogic(sudoku_board_values)
     row_wise_sudoku = game_logic.create_game_environment()
 
-    return render_template("Board.html", row_wise_board = row_wise_sudoku)
+    return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 if __name__ == "__main__":
     app.secret_key = "123456789"

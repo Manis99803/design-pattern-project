@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block body %}
-  <p id = "outputFeedback" style = "display: none; font-size : 20px"></p>
-  <input type = "text" name = "name" id = "name">
-  <input type = "password" name = "password" id = "password">
-  <input type = "submit" value = "Login" id = "userLogin">
-  <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/Login.js') }}"></script>
-{% endblock %}
-  

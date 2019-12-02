@@ -120,6 +120,7 @@ class GameLogic:
                         cell.set_cell_value(previous_cell_object.get_cell_value())
                         cell_dictionary = cell.get_dictionary_representation()
                         cell_dictionary["squareNumber"] = square.get_square_number()
+                        print(cell_dictionary)
                         return cell_dictionary
         else:
             return False

@@ -20,9 +20,6 @@ class DataBase:
         return True
 
     def add_user_to_db(self, user_object):
-
-        user = User(user_object["name"], user_object["password"])
-
         query = "INSERT INTO User VALUES (?, ?)"
         self.cursor.execute(query, [user_object["name"], user_object["password"], ])
         self.connection_state.commit()
