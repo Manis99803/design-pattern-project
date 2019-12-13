@@ -92,10 +92,10 @@ cursor.execute('''CREATE TABLE Board
                     )
                 ''')
 
-# connection_state.execute('''CREATE TABLE User 
-#                         (name TEXT PRIMARY KEY,
-#                         password TEXT)
-#                         ''')
+connection_state.execute('''CREATE TABLE User 
+                        (name TEXT PRIMARY KEY,
+                        password TEXT)
+                        ''')
 
 connection_state.commit()
 connection_state.close()

@@ -602,6 +602,7 @@
         console.timeEnd("loading time");
     });
     $(document).ready(function() {
+        $('.cells_complete').text(cells_filled + "/81");
         $('.cell').each(function(i) {
             $(this).attr('id', cell_info[i]);
         });
