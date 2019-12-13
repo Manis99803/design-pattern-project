@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 from User import User
 import json
 from GameLogic import Game
+import time
 
 app = Flask(__name__)
 
@@ -126,8 +127,6 @@ def get_hint():
 def login():
     global session
     if 'logged_in' in session:
-        print(session.get("logged_in"))
-        print(session.get("game_number"))
         return redirect(url_for("game_history"))
     else:
         return render_template("login.html")
@@ -183,11 +182,14 @@ def older_game(game_number):
 @LoginCheck
 @app.route("/new_game")
 def new_game():
+    start = int(round(time.time() * 1000))
     global game_object
     game_object.generate_board_values()
     game_object.set_values()
 
     row_wise_sudoku = game_object.get_game_environment_object().create_game_environment()
+    end = int(round(time.time() * 1000))
+    print(end - start)
     return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 if __name__ == "__main__":

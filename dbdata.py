@@ -89,21 +89,17 @@ class DataBase:
         
         query = "SELECT * FROM Board where name = ? and gameNumber = ?"
         self.cursor.execute(query, [user_name, game_number])
-        boards = self.cursor.fetchall()
-        print(boards)
-        if len(boards) == 0:
+        board = self.cursor.fetchone()
+        
+        if board == None:
             return False
         
-        sudoku_games = list()
-        for board in boards:
-            row_wise_sudoku = list()
-            row = list()
-            for cell_number in range(2, 83):
-                row.append(board[cell_number])
-                if (cell_number - 1) % 9 == 0:
-                    row_wise_sudoku.append(row)
-                    row = []
-            sudoku_games.append(row_wise_sudoku)
-        
-        print(sudoku_games)
-        return sudoku_games[0]  
+        row_wise_sudoku = list()
+        row = list()
+        for cell_number in range(2, 83):
+            row.append(board[cell_number])
+            if (cell_number - 1) % 9 == 0:
+                row_wise_sudoku.append(row)
+                row = []        
+
+        return row_wise_sudoku
