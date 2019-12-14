@@ -154,6 +154,7 @@ def game_history():
     if sudoku_games == False:
         return redirect(url_for("new_game"))
     else:
+
         return render_template("previous_games.html", sudoku_games = sudoku_games)
 
 
@@ -182,14 +183,14 @@ def older_game(game_number):
 @LoginCheck
 @app.route("/new_game")
 def new_game():
-    start = int(round(time.time() * 1000))
+    # start = int(round(time.time() * 1000))
     global game_object
     game_object.generate_board_values()
     game_object.set_values()
-
+    if "game_number" in session:
+        del session["game_number"]
     row_wise_sudoku = game_object.get_game_environment_object().create_game_environment()
-    end = int(round(time.time() * 1000))
-    print(end - start)
+    # end = int(round(time.time() * 1000))
     return render_template("sudoku.html", row_wise_board = row_wise_sudoku)
 
 if __name__ == "__main__":

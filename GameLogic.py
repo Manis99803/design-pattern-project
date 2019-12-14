@@ -30,6 +30,7 @@ class GameEnvironment:
         diff_cell = dict()
     
         self.sudoku_solution = SudokuSolution(self.sudoku_board_values)
+        print(self.sudoku_solution)
         diff_cell = self.sudoku_solution.compute_diff_cell()
 
         map_objects = MapObjects(self.sudoku_board_values)
@@ -105,6 +106,9 @@ class StateChange:
         column_wise_sudoku = self.game_environment.get_sudoku_form_object().convert_square_wise_to_column_wise()
 
         cell_objects = self.game_environment.get_sudoku_board_object().get_square_objects()[int(cell_data["squareNumber"])].get_squares_cell()
+
+
+
         square_elements = [cell.get_cell_value() for cell in cell_objects if cell.get_cell_number() != user_cell_object.get_cell_number()]
         
         row_elements = row_wise_sudoku[user_cell_object.get_row_number()]
@@ -114,6 +118,7 @@ class StateChange:
         column_elements = [cell["value"] for cell in column_elements if cell["cellNumber"] != user_cell_object.get_cell_number()]
 
         # Means that the user is clearing the value in that particular cell.
+        
         if user_cell_object.get_cell_value() == 0:
             cell = cell_objects[user_cell_object.get_cell_number()]
             self.previous_state.append(copy.deepcopy(cell_objects[user_cell_object.get_cell_number()]))
@@ -131,6 +136,7 @@ class StateChange:
             return True
         
         else:
+            self.previous_state.append(copy.deepcopy(cell_objects[user_cell_object.get_cell_number()]))
             return False
 
     def restore_previous_state(self):
@@ -145,8 +151,8 @@ class StateChange:
                         cell_dictionary = cell.get_dictionary_representation()
                         cell_dictionary["squareNumber"] = square.get_square_number()
                         return cell_dictionary
-        else:
-            return False
+        # else:
+        #     return False
 
 
 class Game:
