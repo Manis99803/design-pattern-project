@@ -26,6 +26,7 @@ class SudokuSolution:
                     ''', re.VERBOSE)
 
         result = ansi_escape.sub('', self.solved_string)
+        print(result)
 
         self.row_wise_solved_sudoku = list()
         self.row_elements = []
@@ -39,12 +40,14 @@ class SudokuSolution:
                     self.row_elements = []
             except:
                 continue
-
+        print(self.row_wise_solved_sudoku)        
         return self.row_wise_solved_sudoku
 
     def compute_diff_cell(self):
         diff_cell = dict()
         sudoku_solution = self.get_solved_sudoku()
+        print("Row",self.row_wise_sudoku)
+        print('Sol', sudoku_solution)
         for i in range(9):
             for j in range(9):
                 if self.row_wise_sudoku[i][j] != sudoku_solution[i][j]:

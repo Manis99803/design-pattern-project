@@ -39,18 +39,22 @@ class DataBase:
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
             ?, ?, ?, ?, ?, ?, ?)", board_values)
 
+
             self.connection_state.commit()
+
         
         else:
 
             query = "SELECT count(*) FROM Board where name = ?"
             self.cursor.execute(query, [user_name])
             number_of_games = self.cursor.fetchone()
-            game_number = int()
 
+            
             if number_of_games == None:
                 game_number = 1
             else:
+                print(number_of_games)
+                game_number = int(number_of_games[0])
                 game_number += 1
 
             board_values = [i for row in row_wise_sudoku for i in row]
@@ -71,14 +75,14 @@ class DataBase:
         boards = self.cursor.fetchall()
         if len(boards) == 0:
             return False
-        
+        print(boards)
         sudoku_games = list()
         for board in boards:
             row_wise_sudoku = list()
             row = list()
             for cell_number in range(2, 83):
                 row.append(board[cell_number])
-                if cell_number % 9 == 0:
+                if (cell_number - 1) % 9 == 0:
                     row_wise_sudoku.append(row)
                     row = []
             sudoku_games.append(row_wise_sudoku)

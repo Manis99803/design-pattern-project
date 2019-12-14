@@ -51,14 +51,17 @@
             color: #fff !important;
         }
         .table{
-            background: #134f83 !important;
-            color: white !important;
+            background: #ecf0f1 !important;
+            color: black !important;
+        }
+        .contain {
+            background-color: white;
         }
         td:nth-child(4), td:nth-child(7) {
-            border-left: solid 4px #fff !important;
+            border-left: solid 2px #333 !important;
         }
         tr:nth-child(3), tr:nth-child(6) {
-            border-bottom: solid 4px #fff;
+            border-bottom: solid 2px #333;
         }
         td {
             padding: 10px !important;
@@ -90,9 +93,10 @@
                         <li>
                         <a href="http://127.0.0.1:5000/logout" id="save">log out</a>
                         </li>
-                        <!--li>
-                        <a href="http://127.0.0.1:5000/signup" id="log">sign up</a>
-                        </li-->
+
+                        <li>
+                        <a href="http://127.0.0.1:5000/new_game" id="new Game">New Game</a>
+                        </li>
                     </ul>
                     </nav>
                 </div>
@@ -106,10 +110,10 @@
                             {% for row in game %}
                                 <tr>
                                     {% for ele in row %}
-                                        {% if ele|string|length %}
+                                        {% if ele|string|length and ele != 0 %}
                                             <td>{{ ele }}</td>
                                         {% else %}
-                                            <td>&nbsp;</td>
+                                            <td class="contain">&nbsp;</td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
@@ -128,7 +132,7 @@
         $('table').click(function() {
             var tb = $(this).attr('id');
             console.log(tb);
-            window.location.replace("http://127.0.0.1:5000/older_game/"+tb);
+            window.location.href = "http://127.0.0.1:5000/older_game/"+tb;
         })
     })
 </script>
